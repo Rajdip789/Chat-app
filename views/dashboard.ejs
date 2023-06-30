@@ -1,0 +1,87 @@
+<%- include('layouts/header.ejs') %>
+
+<h2 class="mb-4">Hi, <%= user.username %></h2>
+
+<div class="row">
+	<div class="col-md-3">
+		<ul class="list-group">
+			<%
+				if(userList.length > 0) {
+					for(let i = 0; i< userList.length; i++) {
+						%>
+							<li class="list-group-item list-group-item-dark cursor-pointer user-list" data-id = "<%= userList[i]._id %>">
+								<img src="<%= 'http://localhost:5000/'+userList[i].image %>" alt="" width="15%">
+								<%= userList[i].username %>
+								<%
+									if(userList[i].isOnline) {
+										%>
+											<sup class="online-status" id="<%= userList[i]._id %>-status" >Online</sup>
+										<%
+									} else {
+										%>
+											<sup class="offline-status" id="<%= userList[i]._id %>-status" >Offline</sup>
+										<%
+									} 
+								%>
+							</li>
+						<%
+					}
+				}
+			%>
+		</ul>
+	</div>
+	<div class="col-md-9">
+		<h3 class="start-head"> Click to Start a Chat</h3>
+
+		<div class="chat-section">
+			<div id="chat-container">
+				<!-- <div class="current-user-chat">Hi</div>
+				<div class="opposite-user-chat">Hi</div> -->
+			</div>
+
+			<form action="" id="chat-form">
+				<input type="text" name="message" placeholder="Enter message" id="message" class="border" required>
+				<input type="submit" value="Send message" class="btn btn-primary">
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	const sender_id = `<%= user._id %>`;
+	let receiver_id;
+
+	const socket = io('/user-namespace', {
+		auth: {
+			token: sender_id
+		}
+	});
+
+
+	$(document).ready(() => {
+		$('.user-list').click(() => {
+
+			receiver_id = $(this).attr('data-id');
+
+			$('.start-head').hide();
+			$('.chat-section').show();
+		})
+	})
+
+	//Update user status
+
+	socket.on('getOnlineUser', (data) => {
+		$('#'+data.user_id+'-status').text('Online');
+		$('#'+data.user_id+'-status').removeClass('offline-status');
+		$('#'+data.user_id+'-status').addClass('online-status');
+	})
+
+	socket.on('getOfflineUser', (data) => {
+		$('#'+data.user_id+'-status').text('Offline');
+		$('#'+data.user_id+'-status').removeClass('online-status');
+		$('#'+data.user_id+'-status').addClass('offline-status');
+	})
+
+</script>
+<%- include('layouts/footer.ejs') %>
