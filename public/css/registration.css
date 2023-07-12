@@ -1,0 +1,169 @@
+body {
+	padding: 0;
+	margin: 0;
+}
+
+.fa-google {
+	margin: 8px;
+}
+
+.app__flex {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.registration__container {
+	/*background-color: #f0f1f5;*/
+	background-color: #ded4d4;
+	/* background: url('../assets/chatBG1.jpg');
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover; */
+	width: 100vw;
+	height: 100vh;
+}
+
+.registration__container .registration__card {
+	height: 34rem;
+	width: 22rem;
+	padding: 1.5rem;
+	background-color: white;
+	justify-content: space-evenly;
+	flex-direction: column;
+	/* position: absolute;
+	right: 10rem; */
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+	-webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+	border-radius: 30px;
+}
+
+.registration__container .registration__card h2 {
+	font-family: sans-serif;
+	font-size: 26px;
+	margin: 14px;
+}
+
+.registration__container .registration__card .registration__info {
+	flex-direction: column;
+	width: 100%;
+}
+
+.registration__card form{
+	width: 100%;
+}
+
+.text__link {
+	font-size: 15px;
+	text-decoration: none;
+	cursor: pointer;
+	color: black;
+}
+
+.registration__container .registration__card .registration__info .input__container {
+	position: relative;
+	width: 100%;
+}
+
+.registration__container .registration__card .registration__info .input__container input {
+	width: 90%;
+	padding: 12px 15px;
+	margin: 0.5rem 0rem;
+	font-size: medium;
+	border: 1px solid darkgray;
+	border-radius: 30px;
+	outline: none;
+}
+
+.registration__container .registration__card .registration__info .input__container .registration__icon {
+	position: absolute;
+	margin: auto;
+	top: 22px;
+	right: 25px;
+	cursor: pointer;
+}
+
+.registration__container .registration__card .checking {
+	width: 94%;
+	justify-content: space-between;
+}
+
+.registration__container .registration__card .checking div {
+	display: flex;
+}
+
+.registration__container .registration__card .checking .text {
+	margin: 0px 5px;
+}
+
+.registration__container .registration__card .btn__default {
+	width: 100%;
+	height: 42px;
+	border: none;
+	color: white;
+	background-color: black;
+	border-radius: 30px;
+	cursor: pointer;
+	font-size: large;
+	font-family: sans-serif;
+	transition: 0.2s all ease-in-out;
+}
+
+.registration__container .registration__card .btn__default:hover {
+	background-color: rgba(0, 0, 0, 0.8);
+}
+
+.registration__container .registration__card .btn__default .loader {
+	width: 14px;
+	height: 14px;
+	margin: 0 1rem;
+	border: 3px solid transparent;
+	border-top-color: #ffffff;
+	border-radius: 50%;
+	animation: button-loading-spinner 1s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+	from {
+		transform: rotate(0turn);
+	}
+
+	to {
+		transform: rotate(1turn);
+	}
+}
+
+.registration__container .registration__card .btn__alternative {
+	background-color: #fafafa;
+	color: black;
+	font-size: medium;
+	border: 1px solid darkgray;
+	transition: 0.5s all ease-in-out;
+}
+
+.registration__container .registration__card .btn__alternative svg {
+	margin: 0rem 0.5rem;
+	border-radius: 50%;
+	background-color: white;
+}
+
+.registration__container .registration__card .btn__alternative:hover {
+	background-color: #4345cd;
+	color: white;
+}
+
+.registration__container .registration__card .btn__alternative:hover svg {
+	color: white;
+}
+
+.registration__container .registration__card .reg__info span {
+	margin: 0px 3px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+@media screen and (max-width: 480px) {
+	.registration__container .registration__card {
+		width: 80vw;
+	}
+}
