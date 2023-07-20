@@ -3,9 +3,12 @@ const http = require('http')
 const dotenv = require("dotenv");
 const socketio =  require('socket.io');
 const port = process.env.MONGO_URL || 5000
+require('./passport')
 require('./db/conn');
+
 const User = require('./models/userModel');
 const Chat = require('./models/chatModel');
+const GroupChat = require('./models/groupChatModel');
 
 dotenv.config();
 const app = express();
@@ -66,14 +69,34 @@ uns.on('connection', async (socket) => {
 		socket.emit('receiveOldChat', { oldChats : oldChats });
 	})
 
-
 	//Delete Chat
 
 	socket.on('chatDeleted', (chat_id, receiver_id) => {
 		socket.broadcast.to(connectedUsers[receiver_id]).emit('deleteChat', chat_id);
 	})
 
+
+	//Group chatting implementation
+
+	socket.on('newGroupChat', (data) => {
+		socket.broadcast.emit('loadNewGroupChat', data);
+	})
+
+	//loading old group chats
+
+	socket.on('loadOldGroupChat', async (data) => {
+	    const oldGroupChats = await GroupChat.find({ group_id: data.group_id }).populate('sender_id');
+
+		socket.emit('receiveOldGroupChat', { oldGroupChats : oldGroupChats });
+	})
+
+	//Delete Group Chat
+
+	socket.on('groupChatDeleted', (chat_id) => {
+		socket.broadcast.emit('deleteGroupChat', chat_id);
+	})
 });
+
 
 server.listen(port, () => {
 	console.log('Server is running');

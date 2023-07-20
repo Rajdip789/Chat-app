@@ -4,6 +4,8 @@ const path = require('path');
 const multer = require('multer');
 const session = require('express-session')
 const cookieParser = require('cookie-parser');
+const passport = require('passport');
+
 const userController = require('../controllers/userController');
 const auth = require('../middlewares/auth')
 
@@ -32,7 +34,20 @@ user_route.use(
 	  saveUninitialized: false,
 	  secret: process.env.SESSION_SECRET,
 	})
-  );
+);
+
+user_route.use(passport.initialize())
+user_route.use(passport.session());
+
+user_route.get("/google", passport.authenticate("google", { scope : ["profile", "email"] }));
+
+user_route.get("/google/callback", passport.authenticate("google"), (req, res) => {
+
+	req.session.user = req.user;
+	res.cookie('user', JSON.stringify(req.user));
+	res.redirect('/dashboard');
+
+})
 
 
 user_route.get('/register', auth.isLogout, userController.registerLoad);
@@ -62,9 +77,14 @@ user_route.get('/share-group/:id', userController.shareGroup);
 user_route.post('/join-group', userController.joinGroup);
 user_route.post('/leave-group', userController.leaveGroup);
 
+user_route.post('/save-group-chat', userController.saveGroupChat);
+user_route.post('/delete-group-chat', userController.deleteGroupChat);
+
+user_route.get('/profile', auth.isLogin, userController.loadProfile);
+user_route.post('/update-profile', upload.single('image'), userController.updateProfile);
+user_route.post('/delete-profile', auth.isLogin, userController.deleteProfile);
+
 
 user_route.get('*', userController.notFound);
-
-// user_route.post('/update-profile', upload.single('image'), userController.register);
 
 module.exports = user_route;

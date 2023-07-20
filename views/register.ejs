@@ -2,15 +2,23 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<link rel="icon" type="image/png" href=<%= process.env.ORIGIN_URL %>/images/icons8-chat-96.png />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+	<title>Chatify</title>
 
 	<link rel="stylesheet" href="css/registration.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+	<% if(typeof message !== 'undefined') {
+		%>
+			<div class="success-message">
+				<i class="fa fa-check-circle-o" aria-hidden="true"></i> Registered successfully! Please login to enter!
+			</div>
+		<%
+	} %>
 	<div class='app__flex registration__container'>
 		<div class='app__flex registration__card'>
 			<div><h2>Create Account</h2></div>
@@ -44,7 +52,7 @@
 			<button class='btn__default' type="submit" value="Register" form="register">
 				Create Account
 			</button>
-			<button class='app__flex btn__default btn__alternative'><i class="fa fa-google" aria-hidden="true"></i>Sign up with Google</button>
+			<a href="/google" class='app__flex btn__default btn__alternative'><i class="fa fa-google" aria-hidden="true"></i>Sign up with Google</a>
 			<div class='reg__info'>
 				<a href="/" class='text__link'>Already have an account?<span>Sign in</span></a>
 			</div>
@@ -52,11 +60,3 @@
 	</div>
 </body>
 </html>
-
-<%
-	if(typeof message !== 'undefined') {
-		%>
-			<p style="color: green;"><%= message %></p>
-		<%
-	}
-%>

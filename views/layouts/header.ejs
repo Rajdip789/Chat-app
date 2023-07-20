@@ -2,7 +2,8 @@
 <html lang="en">
 
 <head>
-	<title>Chatting system</title>
+	<link rel="icon" type="image/png" href=<%= process.env.ORIGIN_URL %>/images/icons8-chat-96.png />
+	<title>Chatify</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
@@ -59,20 +60,24 @@
 		<div id="content" class="p-4">
 			<div class="app__flex header">
 				<div class="app__flex wrapper">
-					<div class="app__flex left">
+					<div class="left">
 						<div class="menu-toggel">
-							<a class="fa fa-bars fa-2x"></a>
+							<a href="/dashboard" class="fa fa-home"></a>
+							<a href="/groups" class="fa fa-group"></a>
+							<a href="/calls" class="fa fa-phone"></a>
 						</div>
-						<div>
-							Messageing
+						<div class="app__name">
+							<img type="image/png" src=<%= process.env.ORIGIN_URL %>/images/icons8-chat-48.png width="26px" />
+							Chatify
 						</div>
 					</div>
 					<div class="middle"></div>
 					<div class="app__flex right">
-						<div><a class="fa fa-bell fa-x"></a></div>
-						<div class="profile">
-						<img src="<%= 'http://localhost:5000/'+user.image %>" class="profile" alt="" width="15%" />
-						</div>
+						<!-- <a class="fa fa-bell fa-x"></a>	 -->
+						<a href="/profile" class="profile">
+						<img src=<%= process.env.ORIGIN_URL %>/<%= user.image %> class="profile" alt="" width="15%" />
+						</a>
+						<a class="fa fa-sign-out fa-2x head-sign-out" aria-hidden="true"></a>
 					</div>
 				</div>
 			</div>

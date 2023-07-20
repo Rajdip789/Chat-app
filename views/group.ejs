@@ -3,7 +3,7 @@
 	<% if(typeof GroupJoinResData !== 'undefined') { %>
 		<div class="app__flex flex-column p-4" style="height: 95%;">
 			<div class="rounded bg-light m-2">
-				<img src="<%= 'http://localhost:5000/'+GroupJoinResData.group.image %>" alt="user logo" height="100px">
+				<img src=<%= process.env.ORIGIN_URL %>/<%= GroupJoinResData.group.image %> alt="user logo" height="100px">
 			</div>
 			<div class="app__flex flex-column m-2 text-white">
 				<h4 class="text-white"><%= GroupJoinResData.group.name %></h4>
@@ -41,15 +41,15 @@
 			<ul class="list-group">
 
 				<% if(myGroups.length == 0 && joinedGroups.length == 0) { %>
-					<h2>No Groups found!</h2>
+					<h3>No Groups found!</h3>
 				<% } %>
 
 				<!--------- My Groups ------------->
 				<% if(myGroups.length> 0) {
 					for(let i = 0; i< myGroups.length; i++) { %>
-						<li class="list-group-item user-list group-list app__flex" data-id="<%= myGroups[i]._id %>" data-name="<%= myGroups[i].name %>" data-image="<%= myGroups[i].image %>">
-							<div class="app__flex user__image">
-								<img src="<%= 'http://localhost:5000/'+myGroups[i].image %>" alt="user logo" height="70%">
+						<li class="list-group-item group-list app__flex" data-id="<%= myGroups[i]._id %>" data-name="<%= myGroups[i].name %>" data-image="<%= myGroups[i].image %>" data-description="<%= myGroups[i].description %>">
+							<div class="app__flex group__image">
+								<img src=<%= process.env.ORIGIN_URL %>/<%= myGroups[i].image %> alt="user logo" height="70%">
 							</div>
 							<div class="flex-grow-1">
 								<%= myGroups[i].name %>
@@ -73,7 +73,7 @@
 								<div class="modal-dialog modal-dialog-centered" role="document">
 									<div class="modal-content">
 										<div class="modal-header">
-											<h5 class="modal-title" id="exampleModalCenterTitle">Create Group</h5>
+											<h5 class="modal-title" id="exampleModalCenterTitle">Add / Remove Members</h5>
 											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 												<span aria-hidden="true">&times;</span>
 											</button>
@@ -99,7 +99,7 @@
 										<div class="modal-footer">
 											<p id="add-member-error" style="color: red"></p>
 											<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-											<button type="submit" class="btn btn-dark" form="add-member-form">Update Members</button>
+											<button type="submit" class="btn btn-dark" form="add-member-form">Update</button>
 										</div>
 									</div>
 								</div>
@@ -122,8 +122,8 @@
 
 												<input type="hidden" name="group_id" id="group-update-id"/>
 												<input type="file" name="image" class="w-50 mb-2" id="group-image" />
-												<input type="text" name="name" placeholder="Group name" class="w-50 mb-2" id="group-name" required />
-												<input type="text" name="description" placeholder="Description" class="w-50 mb-2" id="group-description"/>
+												<input type="text" name="name" placeholder="Group name" class="group__input" id="group-name" required />
+												<input type="text" name="description" placeholder="Description" class="group__input" id="group-description"/>
 											</div>
 											
 											<div class="modal-footer">
@@ -144,9 +144,9 @@
 					<!--------- Joined Groups --------->
 					if(joinedGroups.length> 0) {
 						for(let i = 0; i< joinedGroups.length; i++) { %>
-							<li class="list-group-item user-list group-list app__flex" data-id="<%= joinedGroups[i].group_id._id %>" data-name="<%= joinedGroups[i].group_id.name %>" data-image="<%= joinedGroups[i].group_id.image %>">
-								<div class="app__flex user__image">
-									<img src="<%= 'http://localhost:5000/'+joinedGroups[i].group_id.image %>" alt="user logo" height="70%">
+							<li class="list-group-item group-list app__flex" data-id="<%= joinedGroups[i].group_id._id %>" data-name="<%= joinedGroups[i].group_id.name %>" data-image="<%= joinedGroups[i].group_id.image %>" data-description="<%= joinedGroups[i].group_id.description %>">
+								<div class="app__flex group__image">
+									<img src=<%= process.env.ORIGIN_URL %>/<%= joinedGroups[i].group_id.image %> alt="user logo" height="70%">
 								</div>
 								<div class="flex-grow-1">
 									<%= joinedGroups[i].group_id.name %>
@@ -186,9 +186,9 @@
 						<form action="" method="POST" enctype="multipart/form-data">
 							<div class="modal-body app__flex flex-column">
 								<input type="hidden" name="group_id" id="group-id"/>
-							  	<input type="file" name="image" class="w-50 mb-2" required />
-							  	<input type="text" name="name" placeholder="Group name" class="w-50 mb-2" required />
-							  	<input type="text" name="description" placeholder="Description" class="w-50 mb-2" />
+							  	<input type="file" name="image" class="w-50 mb-2" accept=".png, .jpg, .jpeg" required />
+							  	<input type="text" name="name" placeholder="Group name" class="group__input" required />
+							  	<input type="text" name="description" placeholder="Description" class="group__input" />
 							</div>
 							
 							<div class="modal-footer">
@@ -203,19 +203,20 @@
 
 			<!-- Chat Section -->
 			<div class="chat-section">
-				<div class="group-headline app__flex" style="height: 50px; background-color: #e2e2e2; color: #4d38a2;">
+				<div class="group-headline app__flex">
 					<div>
-						<img class="group__image" style="height: 35px;" src="" alt="group-logo"/>
+						<img class="group__image rounded-pill" style="height: 35px;" src="" alt="group-logo"/>
 					</div>
-					<p class="group__name" style="font-weight: bold; font-size: large;"></p>
+					<span class="group__name" style="font-weight: bold; font-size: large;"></span>
+					<span class="group__description" style="margin-left: 1rem;"></span>
 				</div>
 				<div id="group-chat-container">
 					<!-- <div class="current-user-chat">Hi</div>
 				<div class="opposite-user-chat">Hi</div> -->
 				</div>
 
-				<form action="" id="chat-form" class="app__flex">
-					<input type="text" name="message" placeholder="Enter message" id="message" class="message" required>
+				<form action="" id="group-chat-form" class="app__flex">
+					<input type="text" name="message" placeholder="Enter message" id="group-message" class="message" required>
 					<button type="submit" value="" class="btn btn-secondary">
 						<i class="fa fa-paper-plane send" aria-hidden="true"></i>
 					</button>

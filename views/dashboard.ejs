@@ -2,13 +2,18 @@
 			<div class="row">
 				<div class="col-md-3">
 					<ul class="list-group">
+
+						<% if(userList.length == 0) { %>
+							<h2>No Users found!</h2>
+						<% } %>
+
 						<%
 							if(userList.length > 0) {
 								for(let i = 0; i< userList.length; i++) {
 									%>
 										<li class="list-group-item user-list app__flex" data-id = "<%= userList[i]._id %>">
 											<div class="app__flex user__image">
-												<img src="<%= 'http://localhost:5000/'+userList[i].image %>" alt="user logo" height="70%">
+												<img src=<%= process.env.ORIGIN_URL %>/<%=userList[i].image %> alt="user logo" height="70%">
 											</div>
 											<div class="flex-grow-1">
 												<%= userList[i].username %>

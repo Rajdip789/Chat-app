@@ -1,0 +1,32 @@
+<%- include('layouts/header.ejs') %>
+
+	<div class="row">
+		<div class="mr-auto ml-auto profile__col">
+			<div class="app__flex profile__image">
+				<div class="app__flex user__image">
+					<img src=<%= process.env.ORIGIN_URL %>/<%= user.image %> alt="profile-pic" />
+					<!-- <input type="file" name="image" class="w-50 mb-2" accept=".png, .jpg, .jpeg" required /> -->
+				</div>
+				<div class="app__flex profile__update">
+					<a class="fa fa-upload" aria-hidden="true"></a>
+					<button class="btn btn-primary">Update</button>
+				</div>
+			</div>
+			<div class="app__flex flex-column profile__info">
+				<div class="form__input">
+					<label>Username</label>
+					<input type="text" placeholder='<%= user.username %>' name="username" readonly/>
+				</div>
+
+				<div class="form__input">
+					<label>Email</label>
+					<input type="email" placeholder='<%= user.email %>' name="email" readonly/>
+				</div>
+			</div>
+			<div class="profile__delete">
+				<h5>Delete Account</h5>
+			</div>
+		</div>
+	</div>
+
+<%- include('layouts/footer.ejs') %>

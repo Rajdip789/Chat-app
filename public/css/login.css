@@ -135,6 +135,7 @@ body {
 }
 
 .login__container .login__card .btn__alternative {
+	text-decoration: none;
 	background-color: #fafafa;
 	color: black;
 	font-size: medium;
@@ -167,4 +168,14 @@ body {
 	.login__container .login__card {
 		width: 80vw;
 	}
+}
+
+.error-message {
+	padding: 6px;
+    text-align: center;
+    position: absolute;
+    background-color: white;
+    border-radius: 5px;
+    top: 10px;
+    left: 10px;
 }

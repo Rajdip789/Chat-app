@@ -6,7 +6,7 @@ const GroupSchema = new mongoose.Schema(
 		name: { type: String, required: true },
 		description: { type: String, default: ""},
 		image: { type: String, required: true },
-		limit: { type: Number, required: true, default: 50 }
+		limit: { type: Number, required: true, default: 10 }
 	},
 	{
 		timestamps: true
