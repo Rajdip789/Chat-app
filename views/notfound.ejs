@@ -1,7 +1,22 @@
-<%
-	if(typeof message !== 'undefined') {
-		%>
-			<h1><%= message %></h1>
-		<%
-	}
-%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="icon" type="image/png" href=<%= process.env.ORIGIN_URL %>/images/icons8-chat-96.png />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chatify</title>
+
+	<link rel="stylesheet" type="text/css" href="/css/login.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+	<div class="app__flex login__container" style="flex-direction: column; gap: 20px;">
+		<div class="joingroup-error-message">
+			<i class="fa fa-exclamation-circle" aria-hidden="true"></i> <%= message %>
+		</div>
+		<a href="/" class="custom_btn">Back to Home</a>
+	</div>
+</body>
+</html>

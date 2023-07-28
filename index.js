@@ -42,13 +42,15 @@ uns.on('connection', async (socket) => {
 	socket.on('disconnect', async () => {
 		console.log('User Disconnected');
 
+		delete connectedUsers.user_id;
+
 		await User.findByIdAndUpdate({ _id: user_id }, { $set: { isOnline: false } });
 
-		//await User.collection.updateOne({ _id: user_id }, { $currentDate: { updatedAt: true } });
+		await User.collection.updateOne({ _id: user_id }, { $currentDate: { updatedAt: true } });
 
 		//Broadcast the offline status of the user
 
-		socket.broadcast.emit('getOfflineUser', { user_id : user_id })
+		socket.broadcast.emit('getOfflineUser', { user_id : user_id, lastSeen: new Date() })
 	})
 
 	//chatting implementation

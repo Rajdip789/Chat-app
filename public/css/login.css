@@ -171,6 +171,7 @@ body {
 }
 
 .error-message {
+	cursor: pointer;
 	padding: 6px;
     text-align: center;
     position: absolute;
@@ -178,4 +179,28 @@ body {
     border-radius: 5px;
     top: 10px;
     left: 10px;
+}
+
+.joingroup-error-message {
+	color: white;
+	cursor: pointer;
+	padding: 10px;
+	font-size: 20px;
+    text-align: center;
+    background-color: #784be0;
+    border-radius: 5px;
+}
+
+.custom_btn {
+	display: inline-block;
+    font-weight: 500;
+	font-size: 18px;
+    color: #212529;
+    text-align: center;
+	text-decoration: none;
+    vertical-align: middle;
+	color: #212529;
+    background-color: white;
+	padding: 10px;
+	border-radius: 0.25rem;
 }

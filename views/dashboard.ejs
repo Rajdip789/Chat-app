@@ -1,30 +1,39 @@
 <%- include('layouts/header.ejs') %>
 			<div class="row">
 				<div class="col-md-3">
+					<a id="back-chat" class="fa fa-arrow-left ml-2 d-none" style="color: white;" aria-hidden="true"></a>
 					<ul class="list-group">
 
 						<% if(userList.length == 0) { %>
 							<h2>No Users found!</h2>
-						<% } %>
+						<% }
 
-						<%
-							if(userList.length > 0) {
+						else {
+
+							%>
+								<form action="" method="GET" class="search__input">
+									<input type="text" name="user" placeholder="Search user">
+									<button type="submit" class="btn btn-light app__flex">
+										<a class="fa fa-search" aria-hidden="true"></a>
+									</button>
+								</form>							
+							<%
 								for(let i = 0; i< userList.length; i++) {
 									%>
-										<li class="list-group-item user-list app__flex" data-id = "<%= userList[i]._id %>">
+										<li class="list-group-item user-list app__flex" data-id = "<%= userList[i]._id %>" data-name="<%= userList[i].username %>" data-image="<%= userList[i].image %>" data-time="<%= userList[i].updatedAt %>" data-status="<%= userList[i].isOnline %>">
 											<div class="app__flex user__image">
-												<img src=<%= process.env.ORIGIN_URL %>/<%=userList[i].image %> alt="user logo" height="70%">
+												<img src="<%= process.env.ORIGIN_URL %>/<%=userList[i].image %>" alt="user logo" height="70%">
 											</div>
 											<div class="flex-grow-1">
 												<%= userList[i].username %>
 												<%
 													if(userList[i].isOnline) {
-														%>
-															<sup class="online__status" id="<%= userList[i]._id %>-status" >Online</sup>
+														%>	
+															<sup class="online__status" id="<%= userList[i]._id %>-status" ></sup>
 														<%
 													} else {
 														%>
-															<sup class="offline__status" id="<%= userList[i]._id %>-status" >Offline</sup>
+															<sup class="offline__status" id="<%= userList[i]._id %>-status" ></sup>
 														<%
 													} 
 												%>
@@ -37,10 +46,15 @@
 					</ul>
 				</div>
 				
-				<div class="app__flex col-md-9 p-2" id="start-chat">
+				<div class="app__flex col-md-9" id="start-chat">
 					<h1 class="start-head"> Click to Start a Chat</h3>
 
 					<div class="chat-section">
+						<div class="group-headline app__flex">
+							<img class="user__img rounded-pill" style="height: 30px;" src="" alt="group-logo"/>
+							<span class="user__name" style="font-weight: 500; font-size: medium;"></span>
+							<span class="user__lastActive" style="font-size: small; font-family: cursive;"></span>
+						</div>
 						<div id="chat-container">
 							<!-- <div class="current__user__chat">Hi</div>
 							<div class="opposite__user__chat">Hi</div> -->
@@ -49,7 +63,6 @@
 						<form action="" id="chat-form" class="app__flex">
 							<input type="text" name="message" placeholder="Enter message" id="message" class="message" required>
 							<button type="submit" value="" class="btn btn-secondary app__flex"><i class="fa fa-paper-plane send" aria-hidden="true"></i></button>
-							<!-- <span type="submit" class="fa fa-paper-plane send" aria-hidden="true"></span> -->
 						</form>
 					</div>
 				</div>

@@ -73,9 +73,9 @@ user_route.post('/delete-group', auth.isLogin, userController.deleteGroup);
 user_route.post('/get-members', auth.isLogin, userController.getMembers);
 user_route.post('/add-members', auth.isLogin, userController.addMembers);
 
-user_route.get('/share-group/:id', userController.shareGroup);
-user_route.post('/join-group', userController.joinGroup);
-user_route.post('/leave-group', userController.leaveGroup);
+user_route.get('/share-group/:id', auth.isLogin, userController.shareGroup);
+user_route.post('/join-group', auth.isLogin, userController.joinGroup);
+user_route.post('/leave-group', auth.isLogin, userController.leaveGroup);
 
 user_route.post('/save-group-chat', userController.saveGroupChat);
 user_route.post('/delete-group-chat', userController.deleteGroupChat);

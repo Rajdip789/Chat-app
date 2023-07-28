@@ -1,29 +1,26 @@
-// (function($) {
-
-// 	"use strict";
-
-// 	var fullHeight = function() {
-
-// 		$('.js-fullheight').css('height', $(window).height());
-// 		$(window).resize(function(){
-// 			$('.js-fullheight').css('height', $(window).height());
-// 		});
-
-// 	};
-// 	fullHeight();
-
-// 	$('#sidebarCollapse').on('click', function () {
-//       $('#sidebar').toggleClass('active');
-//   });
-
-// })(jQuery);
-
-
 function getCookie(name) {
 	let matches = document.cookie.match(new RegExp(
 		"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
 	));
 	return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+function getFullDateTime(chatTime) {
+	let date = new Date(chatTime);
+	let cDate = date.getDate();
+	let cMonth = date.getMonth() > 8 ? date.getMonth()+1 : '0'+(date.getMonth()+1);
+	let cYear = date.getFullYear();
+	let cHour = date.getHours();
+	let cMinute = date.getMinutes();
+
+	let ampm = cHour >= 12 ? 'pm' : 'am';
+	cHour = cHour % 12;
+	cHour = cHour ? cHour : 12; // the hour '0' should be '12'
+	cMinute = cMinute < 10 ? '0'+cMinute : cMinute;
+
+	let fullDateTime = cDate+'-'+cMonth+'-'+cYear+'  '+cHour + ':' + cMinute + ' ' + ampm;
+
+	return fullDateTime;
 }
 
 $('.fa-sign-out').click(function() {
@@ -47,6 +44,8 @@ const userData = JSON.parse(getCookie('user'));
 
 const sender_id = userData._id;
 let receiver_id;
+let lastSeen;
+let user_status;
 
 const socket = io('/user-namespace', {
 	auth: {
@@ -59,13 +58,30 @@ $(document).ready(() => {
 	$('.user-list').click(function() {
 
 		receiver_id = $(this).attr('data-id');
+		lastSeen = $(this).attr('data-time');
+		let user_name = $(this).attr('data-name');
+		let user_image = $(this).attr('data-image');
+		user_status = $(this).attr('data-status');
 
 		$('.start-head').hide();
-		$('.chat-section').show();
+		$('.chat-section').fadeIn(400);
+
+		console.log($(window).width);
+		if($(window).width() <= 768) {
+			$(".list-group").fadeOut(400);
+			$("#back-chat").removeClass('d-none');
+		} 
+
 		$('.chat-section').addClass('d-flex');
 		$('#start-chat').removeClass('app__flex');
 		$('.user-list').removeClass('custom__active');
 		$(this).addClass('custom__active');
+
+		$('.user__name').text(user_name);
+		$('.user__img').attr('src', 'http://localhost:5000/'+ user_image);
+
+		user_status == "true" ? $('.user__lastActive').text("Online") :
+		$('.user__lastActive').text("Last active "+getFullDateTime(lastSeen));
 
 		//Load old chats 
 
@@ -73,18 +89,31 @@ $(document).ready(() => {
 	})
 })
 
+$("#back-chat").click(() => {
+	$("#back-chat").addClass('d-none');
+	$(".list-group").fadeIn(400);
+	$('.chat-section').removeClass('d-flex');
+	$('.chat-section').addClass('d-none');
+})
+
 //Update user status
 
 socket.on('getOnlineUser', (data) => {
-	$('#'+data.user_id+'-status').text('Online');
+	$('[data-id="' + data.user_id + '"]').attr('data-status', "true")
 	$('#'+data.user_id+'-status').removeClass('offline__status');
 	$('#'+data.user_id+'-status').addClass('online__status');
+
+	if(receiver_id == data.user_id)
+		$('.user__lastActive').text("Online");
 })
 
 socket.on('getOfflineUser', (data) => {
-	$('#'+data.user_id+'-status').text('Offline');
+	$('[data-id="' + data.user_id + '"]').attr('data-status', "false")
 	$('#'+data.user_id+'-status').removeClass('online__status');
 	$('#'+data.user_id+'-status').addClass('offline__status');
+
+	if(receiver_id == data.user_id)
+		$('.user__lastActive').text("Last active "+getFullDateTime(data.lastSeen));
 })
 
 //Scrool the chats to the end
@@ -138,51 +167,6 @@ const deleteChat = (chat_id) => {
 			)
 		}
 	})
-
-	// Swal.fire({
-	// 	title: 'Edit Message',
-	// 	input: 'text',
-	// 	inputLabel: 'New Message',
-	// 	inputPlaceholder: 'Enter a new message',
-	// 	inputValue: 'Hello, world!', // Default value for the input field
-	// 	showCancelButton: true,
-	// 	confirmButtonText: 'Update',
-	// 	showLoaderOnConfirm: true,
-	// 	preConfirm: (newMessage) => {
-	// 		return newMessage;
-	// 	},
-	// 	allowOutsideClick: () => !Swal.isLoading()
-	// }).then((result) => {
-	// 	if (result.isConfirmed) {
-	// 		const newMessage = result.value;
-
-	// 		$.ajax({
-	// 			url: '/update-chat',
-	// 			type: 'POST',
-	// 			data: { chat_id: chat_id, message: newMessage },
-	// 			success: (res) => {
-	// 				if(res.success) {
-
-	// 					$(`#${chat_id}`).find('span').txt(newMessage);
-	// 					socket.emit('chatUpdated', chat_id, newMessage, receiver_id );
-					
-	// 				} else {
-	// 					Swal.fire({
-	// 						title: 'Failure!',
-	// 						text: 'Something went wrong.',
-	// 						icon: 'error'
-	// 					});
-	// 				}
-	// 			}
-	// 		});
-
-	// 		Swal.fire({
-	// 			title: 'Success!',
-	// 			text: `Message updated to: ${newMessage}`,
-	// 			icon: 'success'
-	// 		});
-	// 	}
-	// });
 }
 
 /*---------User Chat send and save---------*/
@@ -200,18 +184,13 @@ $('#chat-form').submit((event) => {
 			if(res.success) {
 				$('#message').val('');
 
-				let date = new Date(res.data.createdAt);
-				let cDate = date.getDate();
-				let cMonth = date.getMonth() > 8 ? date.getMonth()+1 : '0'+(date.getMonth()+1);
-				let cYear = date.getFullYear();
-
-				let fullDate = cDate+'-'+cMonth+'-'+cYear;
+				let fullDateTime = getFullDateTime(res.data.createdAt);
 
 				let html = `<div class="current__user__chat" id='${res.data._id}'>
 								<h5>
-									<span>${message}  
+									<span>${linkifyHtml(message)}  
 										<i class="fa fa-trash" aria-hidden='true' onclick="deleteChat('${res.data._id}')"></i> <br>
-										<span class='user-data'> ${fullDate}</span>
+										<span class='user-data'> ${fullDateTime}</span>
 									</span> 
 								</h5>
 							</div>
@@ -232,19 +211,13 @@ $('#chat-form').submit((event) => {
 
 socket.on('loadNewChat', (data) => {
 
-	let date = new Date(res.data.createdAt);
-	let cDate = date.getDate();
-	let cMonth = date.getMonth() > 8 ? date.getMonth()+1 : '0'+(date.getMonth()+1);
-	let cYear = date.getFullYear();
-			
-	let fullDate = cDate+'-'+cMonth+'-'+cYear;
-
+	let fullDateTime = getFullDateTime(data.createdAt);
 
 	if(receiver_id === data.sender_id) {
 		let html = `<div class="opposite__user__chat">
 						<h5>
-							<span>${data.message} <br>
-								<span class='user-data'> ${fullDate}</span>
+							<span>${linkifyHtml(data.message)} <br>
+								<span class='user-data'> ${fullDateTime}</span>
 							<span>
 						</h5>
 					</div>`;
@@ -265,12 +238,7 @@ socket.on('receiveOldChat', (data) => {
 
 	for(let i = 0; i < oldChats.length; i++) {
 
-		let date = new Date(oldChats[i].createdAt);
-		let cDate = date.getDate();
-		let cMonth = date.getMonth() > 8 ? date.getMonth()+1 : '0'+(date.getMonth()+1);
-		let cYear = date.getFullYear();
-
-		let fullDate = cDate+'-'+cMonth+'-'+cYear;
+		let fullDateTime = getFullDateTime(oldChats[i].createdAt);
 
 		let addClass = '';
 
@@ -281,13 +249,13 @@ socket.on('receiveOldChat', (data) => {
 		}
 
 		html += `<div class='${addClass}' id='${oldChats[i]._id}'>
-					<h5><span>${oldChats[i].message}` + ` `;
+					<h5><span>${linkifyHtml(oldChats[i].message)}` + ` `;
 						
 		if(oldChats[i].sender_id == sender_id) {
 			html += `<i class="fa fa-trash" aria-hidden='true' onclick="deleteChat('${oldChats[i]._id}')"></i>`;
 		}
 
-		html +=  `<br> <span class='user-data'> ${fullDate}</span>`;
+		html +=  `<br> <span class='user-data'> ${fullDateTime}</span>`;
 						
 		html += 		`</span>
 					</h5>
@@ -321,6 +289,13 @@ $(document).ready(() => {
 		
 		$('.group-btn').hide();
 		$('.chat-section').show();
+
+		console.log($(window).width);
+		if($(window).width() <= 768) {
+			$(".list-group").fadeOut(400);
+			$("#back-chat").removeClass('d-none');
+		} 
+
 		$('.chat-section').addClass('d-flex');
 		$('#start-chat').removeClass('app__flex');
 		$('.group-list').removeClass('custom__active');
@@ -413,6 +388,7 @@ $('#add-member-form').submit(function (event){
 $('.updateGroup').click(function() {
 	let group_obj = JSON.parse($(this).attr('data-obj'));
 
+	$('#selectedImage').attr('src', '/' + group_obj.image);
 	$('#group-update-id').val(group_obj._id);
 	$('#group-name').val(group_obj.name);
 	$('#group-description').val(group_obj.description);
@@ -426,7 +402,7 @@ $('#update-group-form').submit(function(e) {
 	const formData = new FormData();
 	formData.append('group_id', $('#group-update-id').val());
 	formData.append('name', $('#group-name').val());
-	formData.append('image', $('#group-image')[0].files[0]);
+	formData.append('image', $('#imageInput')[0].files[0]);
 	formData.append('description', $('#group-description').val());
 
 	$.ajax({
@@ -620,18 +596,13 @@ $('#group-chat-form').submit((event) => {
 			
 				$('#group-message').val('');
 
-				let date = new Date(res.data[0].createdAt);
-				let cDate = date.getDate();
-				let cMonth = date.getMonth() > 8 ? date.getMonth()+1 : '0'+(date.getMonth()+1);
-				let cYear = date.getFullYear();
-
-				let fullDate = cDate+'-'+cMonth+'-'+cYear;
+				let fullDateTime = getFullDateTime(res.data[0].createdAt);
 
 				let html = `<div class="current__user__chat" id='${res.data[0]._id}'>
 								<h5>
-									<span>${message} <i class="fa fa-trash" aria-hidden='true' onclick="deleteGroupChat('${res.data[0]._id}')"></i>
+									<span>${linkifyHtml(message)} <i class="fa fa-trash" aria-hidden='true' onclick="deleteGroupChat('${res.data[0]._id}')"></i>
 										<br>
-										<span class='user-data'> ${fullDate}</span>
+										<span class='user-data'> ${fullDateTime}</span>
 									</span> 
 								</h5>
 							</div>
@@ -651,12 +622,8 @@ $('#group-chat-form').submit((event) => {
 //Load current chats of all users
 
 socket.on('loadNewGroupChat', (data) => {
-	let date = new Date(data[0].createdAt);
-	let cDate = date.getDate();
-	let cMonth = date.getMonth() > 8 ? date.getMonth()+1 : '0'+(date.getMonth()+1);
-	let cYear = date.getFullYear();
 
-	let fullDate = cDate+'-'+cMonth+'-'+cYear;
+	let fullDateTime = getFullDateTime(data[0].createdAt);
 
 	if(global_group_id == data[0].group_id) {
 		let html = `<div class="opposite__user__chat" id='${data[0]._id}'>`;
@@ -666,9 +633,9 @@ socket.on('loadNewGroupChat', (data) => {
 					'<span class="group__username">' + data[0].sender_id.username + '</span>' +
 				'</div>';	
 
-		html +=	`<h5><span>${data[0].message} 
+		html +=	`<h5><span>${linkifyHtml(data[0].message)} 
 						<br>
-						<span class='user-data'> ${fullDate} </span>`
+						<span class='user-data'> ${fullDateTime} </span>`
 
 		html += 	`</span>
 				</h5>
@@ -708,25 +675,20 @@ socket.on('receiveOldGroupChat', (data) => {
 					'</div>';		
 		}
 
-		html += `<h5><span>${oldGroupChats[i].message}` + ` `;
+		html += `<h5><span>${linkifyHtml(oldGroupChats[i].message)}` + ` `;
 						
 		if(oldGroupChats[i].sender_id._id == sender_id) {
 			html += `<i class="fa fa-trash" aria-hidden='true' onclick="deleteGroupChat('${oldGroupChats[i]._id}')"></i>`;
 
 		}
 		
-		let date = new Date(oldGroupChats[i].createdAt);
-		let cDate = date.getDate();
-		let cMonth = date.getMonth() > 8 ? date.getMonth()+1 : '0'+(date.getMonth()+1);
-		let cYear = date.getFullYear();
-
-		let fullDate = cDate+'-'+cMonth+'-'+cYear;
+		let fullDateTime = getFullDateTime(oldGroupChats[i].createdAt);
 
 		if(oldGroupChats[i].sender_id._id == sender_id) {
-			html += `<br><span class='user-data'> ${fullDate}
+			html += `<br><span class='user-data'> ${fullDateTime}
 					</span>`
 		} else {
-			html += `<br><span class='user-data'> ${fullDate}
+			html += `<br><span class='user-data'> ${fullDateTime}
 					</span>`
 		}
 
@@ -807,5 +769,64 @@ $(".profile__delete").click(() => {
 				}
 			});
 		}
+	})
+})
+
+
+$('#imageInput').on('change', function (event) {
+	const file = event.target.files[0];
+
+	if (file) {
+		const reader = new FileReader();
+
+		reader.onload = function (e) {
+			$('#selectedImage').attr('src', e.target.result);
+		};
+
+		reader.readAsDataURL(file);
+	} 
+});
+
+$('#update-image').click(() => {
+	let image = $('#imageInput')[0].files[0];
+
+	if(image == undefined) {
+		Swal.fire({
+			icon: 'warning',
+			title: 'Oops...',
+			text: 'Please select a new image to update.',
+		});	
+
+		return;
+	}
+
+	const formData = new FormData();
+	formData.append('image', image);
+
+	$.ajax({
+		url: 'update-profile',
+		type: 'POST',
+		data: formData,
+		contentType: false,
+		cache: false,
+		processData: false,
+		success: ((res) => {
+			if(res.success) {
+				Swal.fire({
+					icon: 'success',
+					title: 'Successfull!',
+					text: 'Profile photo updated successfully.',
+				});
+				setTimeout(() => {
+					window.location.reload();
+				}, 2000)
+			} else {
+				Swal.fire({
+						icon: 'error',
+						title: 'Oops...',
+						text: 'Something went wrong.',
+					});
+			}
+		})
 	})
 })

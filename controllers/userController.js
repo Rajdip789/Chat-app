@@ -90,18 +90,22 @@ const logout = async (req, res) => {
 const dashboard = async (req, res) => {
 	try {
 
-		const userList = await User.find({ _id: { $nin: [req.session.user._id] } })
-		//console.log(userList);
+		let searchUser = req.query.user || '';
+		let queryObject = {};
+
+		queryObject._id = { $nin: [req.session.user._id] };
+
+		if (searchUser) {
+			queryObject.username = { $regex: searchUser, $options: "i" }; 
+		}
+
+		const userList = await User.find(queryObject);
 
 		res.render('dashboard', { user: req.session.user, userList: userList });
 
 	} catch (error) {
 		console.log(error);
 	}
-}
-
-const notFound = (req, res) => {
-	res.redirect('/');
 }
 
 const saveChat = async (req, res) => {
@@ -177,7 +181,6 @@ const createGroup = async (req, res) => {
 
 		await group.save();
 
-		console.log('Group createddddddddd');
 		// const groups = await Group.find({ admin_id: req.session.user._id });
 
 		// res.render('group', { success: true, message: 'Group created successfully', user: req.session.user, groupList: groups });
@@ -241,7 +244,6 @@ const addMembers = async (req, res) => {
 
 		} else {
 
-			console.log(req.body.group_id);
 			await Member.deleteMany({ group_id: req.body.group_id });
 
 			let data = [];
@@ -284,6 +286,7 @@ const updateGroup = async (req, res) => {
 		});
 
 		res.status(200).send({ success: true, message: 'Group updated successfully' });
+
 	} catch (error) {
 		console.log(error);
 		res.status(400).send({ success: false, message: error.message })
@@ -317,36 +320,37 @@ const deleteGroup = async (req, res) => {
 const shareGroup = async (req, res) => {
 	try {
 
-		let groupData = await Group.findOne({ _id: req.params.id });
+		let group_id = req.params.id;
+		
+		if(ObjectId.isValid(group_id)) {
 
+			let groupData = await Group.findOne({ _id: group_id });
 
-		if (!groupData) {
+			if (!groupData) {
 
-			res.render('notfound', { message: '404 group not found' });
+				res.render('notfound', { message: '404 Group not found' });
 
-		} else if (req.session.user == undefined) {
+			} else {
 
-			res.render('notfound', { message: 'You should be logged in for joining group' });
+				let totalMembers = await Member.count({ group_id: group_id });
+				let available = 10 - totalMembers;
 
+				let isAdmin = groupData.admin_id == req.session.user._id ? true : false;
+				let isJoind = await Member.count({ group_id: group_id, member_id: req.session.user._id });
+
+				let resData = {
+					group: groupData,
+					totalMembers: totalMembers,
+					available: available,
+					isAdmin: isAdmin,
+					isJoined: isJoind
+				};
+
+				res.render('group', { user: req.session.user, GroupJoinResData: resData });
+			}
 		} else {
-
-			let totalMembers = await Member.count({ group_id: req.params.id });
-			let available = 10 - totalMembers;
-
-			let isAdmin = groupData.admin_id == req.session.user._id ? true : false;
-			let isJoind = await Member.count({ group_id: req.params.id, member_id: req.session.user._id });
-
-			let resData = {
-				group: groupData,
-				totalMembers: totalMembers,
-				available: available,
-				isAdmin: isAdmin,
-				isJoined: isJoind
-			};
-
-			res.render('group', { user: req.session.user, GroupJoinResData: resData });
+			res.render('notfound', { message: 'Invalid Group Link' });
 		}
-
 
 	} catch (error) {
 		console.log(error);
@@ -432,7 +436,6 @@ const deleteProfile = async (req, res) => {
 
 		const image = req.session.user.image;
 		const user_id = req.session.user._id;
-		console.log(image);
 
 		if(image !== "images/default.png") {
 			const filePath = path.resolve("./") + "/public/" + image;
@@ -467,20 +470,25 @@ const updateProfile = async (req, res) => {
 	try {
 
 		const image = req.session.user.image;
+		const newImage = req.file.filename;
 		const user_id = req.session.user._id;
 
-		const filePath = path.resolve("./") + "/public/" + image;
+		if(image !== "images/default.png") {
+			const filePath = path.resolve("./") + "/public/" + image;
 
-		fs.unlink(filePath, (err) => {
-			if (err) {
-				console.error(err);
-				return;
-			}
-		});
+			fs.unlink(filePath, (err) => {
+				if (err) {
+					console.error(err);
+					return;
+				}
+			});
+		}
+
+		req.session.user.image = 'images/' + newImage;
 
 		await User.findByIdAndUpdate({ _id: user_id }, {
 			$set: {
-				image: 'images/' + req.file.filename
+				image: 'images/' + newImage
 			}
 		});
 
@@ -490,6 +498,10 @@ const updateProfile = async (req, res) => {
 		console.log(error);
 		res.status(400).send({ success: false, message: error.message })
 	}
+}
+
+const notFound = (req, res) => {
+	res.render('notfound', { message: "404 Page not found" });
 }
 
 module.exports = {

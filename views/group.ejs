@@ -3,7 +3,7 @@
 	<% if(typeof GroupJoinResData !== 'undefined') { %>
 		<div class="app__flex flex-column p-4" style="height: 95%;">
 			<div class="rounded bg-light m-2">
-				<img src=<%= process.env.ORIGIN_URL %>/<%= GroupJoinResData.group.image %> alt="user logo" height="100px">
+				<img src="<%= process.env.ORIGIN_URL %>/<%= GroupJoinResData.group.image %>" alt="user logo" height="100px">
 			</div>
 			<div class="app__flex flex-column m-2 text-white">
 				<h4 class="text-white"><%= GroupJoinResData.group.name %></h4>
@@ -18,7 +18,7 @@
 					
 					if(GroupJoinResData.isAdmin) {
 						%>
-							<p>You are the creator of this group!</p>
+							<p>Can't join as you are the creator of this group!</p>
 							<a href="/dashboard" class="btn btn-light">Back to Home</a>
 						<%
 					} else if(GroupJoinResData.isJoined != 0) {
@@ -38,6 +38,7 @@
 
 	<div class="row">
 		<div class="col-md-3">
+			<a id="back-chat" class="fa fa-arrow-left ml-2 d-none" style="color: white;" aria-hidden="true"></a>
 			<ul class="list-group">
 
 				<% if(myGroups.length == 0 && joinedGroups.length == 0) { %>
@@ -49,7 +50,7 @@
 					for(let i = 0; i< myGroups.length; i++) { %>
 						<li class="list-group-item group-list app__flex" data-id="<%= myGroups[i]._id %>" data-name="<%= myGroups[i].name %>" data-image="<%= myGroups[i].image %>" data-description="<%= myGroups[i].description %>">
 							<div class="app__flex group__image">
-								<img src=<%= process.env.ORIGIN_URL %>/<%= myGroups[i].image %> alt="user logo" height="70%">
+								<img src="<%= process.env.ORIGIN_URL %>/<%= myGroups[i].image %>" alt="user logo" height="70%">
 							</div>
 							<div class="flex-grow-1">
 								<%= myGroups[i].name %>
@@ -118,10 +119,20 @@
 										</div>
 				
 										<form action="" method="POST" enctype="multipart/form-data" id="update-group-form">
-											<div class="modal-body app__flex flex-column">
+											<div class="modal-body app__flex flex-column" style="gap: 15px;">
 
 												<input type="hidden" name="group_id" id="group-update-id"/>
-												<input type="file" name="image" class="w-50 mb-2" id="group-image" />
+												<!-- <input type="file" name="image" class="w-50 mb-2" id="group-image" /> -->
+
+												<div class="app__flex" style="gap: 20px;">
+													<div class="app__flex manage__group__img">
+														<img src="" alt="group image" id="selectedImage"/>
+													</div>
+				
+													<input type="file" name="image" id="imageInput" class="d-none" accept=".png, .jpg, .jpeg"/>
+													<a class="fa fa-pencil" style="font-size: 20px;" onclick="document.getElementById('imageInput').click()" aria-hidden="true"></a>
+												</div>
+
 												<input type="text" name="name" placeholder="Group name" class="group__input" id="group-name" required />
 												<input type="text" name="description" placeholder="Description" class="group__input" id="group-description"/>
 											</div>
@@ -168,7 +179,7 @@
 
 			</ul>
 		</div>
-		<div class="app__flex col-md-9 p-2" id="start-chat">
+		<div class="app__flex col-md-9" id="start-chat">
 			<button type="button" class="btn btn-primary btn-lg group-btn" data-toggle="modal" data-target="#CreateGroupModel">Create New Group</button>
 
 			<!-- Modal for Create Group -->
@@ -184,11 +195,19 @@
 						</div>
 
 						<form action="" method="POST" enctype="multipart/form-data">
-							<div class="modal-body app__flex flex-column">
-								<input type="hidden" name="group_id" id="group-id"/>
-							  	<input type="file" name="image" class="w-50 mb-2" accept=".png, .jpg, .jpeg" required />
-							  	<input type="text" name="name" placeholder="Group name" class="group__input" required />
-							  	<input type="text" name="description" placeholder="Description" class="group__input" />
+							<div class="modal-body app__flex flex-column" style="gap: 15px">
+									<input type="hidden" name="group_id" id="group-id"/>
+									<div class="app__flex" style="gap: 20px;">
+										<div class="app__flex manage__group__img">
+											<img src="<%= process.env.ORIGIN_URL %>/images/default_group.png" alt="group image" id="selectedImage"/>
+										</div>
+	
+										<input type="file" name="image" id="imageInput" class="d-none" accept=".png, .jpg, .jpeg" required />
+										<a class="fa fa-pencil" style="font-size: 20px;" onclick="document.getElementById('imageInput').click()" aria-hidden="true"></a>
+									</div>
+
+									<input type="text" name="name" placeholder="Group name" class="group__input" required />
+									<input type="text" name="description" placeholder="Description" class="group__input" />
 							</div>
 							
 							<div class="modal-footer">
@@ -204,11 +223,9 @@
 			<!-- Chat Section -->
 			<div class="chat-section">
 				<div class="group-headline app__flex">
-					<div>
 						<img class="group__image rounded-pill" style="height: 35px;" src="" alt="group-logo"/>
-					</div>
 					<span class="group__name" style="font-weight: bold; font-size: large;"></span>
-					<span class="group__description" style="margin-left: 1rem;"></span>
+					<span class="group__description"></span>
 				</div>
 				<div id="group-chat-container">
 					<!-- <div class="current-user-chat">Hi</div>

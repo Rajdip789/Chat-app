@@ -15,12 +15,6 @@
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 
-	<!-- jQuery library -->
-	<!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script> -->
-
-	<!-- Popper JS -->
-	<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script> -->
-
 	<!-- Latest compiled JavaScript -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -33,6 +27,10 @@
 	<link rel="stylesheet" href="/css/style.css" />
 	<link rel="stylesheet" href="/css/dashboard.css" />
 
+	<!-- linkify.js client library -->
+	<script src="https://cdn.jsdelivr.net/npm/linkifyjs@4.1.1/dist/linkify.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/linkify-html@4.1.1/dist/linkify-html.min.js"></script>
+
 	<!-- socket.io client library -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.js"></script>
 </head>
@@ -40,6 +38,7 @@
 <body>
 	<div class="wrapper d-flex align-items-stretch">
 
+		<!--Left Sidebar--->
 		<div class="app__flex">
 			<div class="app__flex asideNavbar">
 				<div class="app__flex top">
@@ -67,18 +66,16 @@
 							<a href="/calls" class="fa fa-phone"></a>
 						</div>
 						<div class="app__name">
-							<img type="image/png" src=<%= process.env.ORIGIN_URL %>/images/icons8-chat-48.png width="26px" />
+							<img type="image/png" src="<%= process.env.ORIGIN_URL %>/images/icons8-chat-48.png" width="26px" />
 							Chatify
 						</div>
 					</div>
 					<div class="middle"></div>
 					<div class="app__flex right">
-						<!-- <a class="fa fa-bell fa-x"></a>	 -->
 						<a href="/profile" class="profile">
-						<img src=<%= process.env.ORIGIN_URL %>/<%= user.image %> class="profile" alt="" width="15%" />
+						<img src="<%= process.env.ORIGIN_URL %>/<%= user.image %>" class="profile" alt="" width="15%" />
 						</a>
-						<a class="fa fa-sign-out fa-2x head-sign-out" aria-hidden="true"></a>
+						<a class="fa fa-sign-out fa-2x head-sign-out" style="color: #6f73cf;" aria-hidden="true"></a>
 					</div>
 				</div>
 			</div>
-			<!-- p-4 p-md-5 pt-5 -->
