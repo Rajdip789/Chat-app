@@ -3,11 +3,15 @@ const Chat = require('../models/chatModel');
 const Group = require('../models/groupModel');
 const Member = require('../models/memberModel');
 const GroupChat = require('../models/groupChatModel');
+const Token = require('../models/tokenModel');
+
+const sendEmail = require('../utils/sendEmail');
 
 const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 const fs = require('fs');
-const path = require("path")
+const path = require("path");
+const crypto = require('crypto');
 
 
 const registerLoad = async (req, res) => {
@@ -500,8 +504,111 @@ const updateProfile = async (req, res) => {
 	}
 }
 
+const forgotPasswordLoad = (req, res) => {
+	try {
+		res.render('forgot-password');
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+const forgotPassword = async (req, res) => {
+	try {
+
+		const email = req.body.email;
+		const userData = await User.findOne({ email: email });
+
+		if(userData) {
+
+			let token = await Token.findOne({ user_id: userData._id });
+			if (token) await token.deleteOne();
+
+			let resetToken = crypto.randomBytes(32).toString("hex");
+			const hash = await bcrypt.hash(resetToken, 10);
+
+			const newToken = new Token({
+				user_id: userData._id,
+				token: hash,
+				createdAt: Date.now(),
+			});
+
+			await newToken.save();
+
+			const link = `${process.env.ORIGIN_URL}/password-reset?token=${resetToken}&id=${userData._id}`;
+
+			sendEmail(userData.email, "Password Reset Request", {name: userData.username, link: link}, "../views/resetPasswordEmail.ejs");
+
+			res.render('forgot-password', { success: true, message: 'Password reset link has been sent !!' })
+
+		} else {
+			res.render('forgot-password', { success: false,  message: 'No user registered with this email !!' })
+		}
+
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+const passwordResetLoad = (req, res) => {
+	try {
+		res.render('reset-password');
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+const passwordReset = async (req, res) => {
+	try {
+
+		const { token, id } = req.query;
+
+		let passwordResetToken = await Token.findOne({ user_id: id });
+
+		if (!passwordResetToken) {
+			
+			res.render('reset-password', { success: false, message: 'Expired password reset link !!' })
+
+		} else {
+
+			const isValid = await bcrypt.compare(token, passwordResetToken.token);
+			if (!isValid) {
+
+				res.render('reset-password', { success: false, message: 'Invalid password reset link !!' })
+
+			} else {
+				
+				const password = req.body.password;
+				const hash = await bcrypt.hash(password, 10);
+
+				await User.updateOne({ _id: id }, { 
+						$set: { 
+							password: hash 
+						} 
+					},
+					{ new: true }
+				);
+
+				const user = await User.findById({ _id: id });
+
+				//Send password reset confirmation mail
+				sendEmail(user.email, "Password Reset Successfully", { name: user.username }, "../views/passwordResetSuccess.ejs");
+
+				//Delete the token so can't using twice
+				await passwordResetToken.deleteOne();
+
+				res.render('reset-password', { success: true, message: 'Password reset successfull ! please login to enter !' });
+			}
+		}
+
+	} catch (error) {
+		console.log(error);
+	}
+}
+
 const notFound = (req, res) => {
+
 	res.render('notfound', { message: "404 Page not found" });
+
 }
 
 module.exports = {
@@ -528,5 +635,9 @@ module.exports = {
 	deleteGroupChat,
 	loadProfile,
 	deleteProfile,
-	updateProfile
+	updateProfile,
+	forgotPasswordLoad,
+	forgotPassword,
+	passwordResetLoad,
+	passwordReset
 }

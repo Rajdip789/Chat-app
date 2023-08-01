@@ -15,7 +15,7 @@
 	<% if(typeof message !== 'undefined') {
 		%>
 			<div class="success-message">
-				<i class="fa fa-check-circle-o" aria-hidden="true"></i> Registered successfully! Please login to enter!
+				<i class="fa fa-check-circle-o" aria-hidden="true"></i> Registered successfully ! Please login to enter !
 			</div>
 		<%
 	} %>
@@ -33,21 +33,20 @@
 						<i class="fa fa-envelope registration__icon"></i>
 					</div>
 					<div class='input__container'>
-						<input type="password" placeholder='Password' name="password" required/>
+						<input type="password" placeholder='Password' name="password" id="pass" required/>
 						<i class="fa fa-lock registration__icon"></i>
 					</div>
 					<div class='input__container'>
-						<input type="password" placeholder='Confirm Password' name="confirmPassword" required/>
+						<input type="password" placeholder='Confirm Password' name="confirmPassword" id="confirm-pass" required/>
 						<i class="fa fa-shield registration__icon"></i>
 					</div>
 				</div>
 			</form>
 			<div class='app__flex checking'>
-				<div>
+				<div class="app__flex">
 					<input type="checkbox" name="vehicle1" value="Bike" />
-					<label class='text text__link'>Agree with policies</label>
+					<label class='text text__link'>Agree with our Terms and Conditions</label> <a href="/register" class="fa fa-external-link" style="color: black; font-size: 10px;" aria-hidden="true"></a>
 				</div>
-				<a href="/ForgetPassword" class='text__link'><span>Forget Password?</span></a>
 			</div>
 			<button class='btn__default' type="submit" value="Register" form="register">
 				Create Account
@@ -59,4 +58,17 @@
 		</div>
 	</div>
 </body>
+
+<script>
+	$(document).ready(function() {
+		$('input[name="confirmPassword"]').change(function() {
+			if ($(this).is(':checked')) {
+				$('input[name="password"]').attr('type', 'text');
+			} else {
+				$('input[name="password"]').attr('type', 'password');
+			}
+		});
+	});
+</script>
+
 </html>

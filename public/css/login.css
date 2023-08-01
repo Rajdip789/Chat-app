@@ -170,7 +170,7 @@ body {
 	}
 }
 
-.error-message {
+.custom-message {
 	cursor: pointer;
 	padding: 6px;
     text-align: center;

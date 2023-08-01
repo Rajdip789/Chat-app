@@ -175,7 +175,7 @@ body {
 	}
 
 	.menu-toggel a{
-		color: #6f73cf;
+		color: #2a3654;
 	}
 
 	.app__name {
@@ -270,7 +270,7 @@ body {
 .profile__col {
 	display: flex;
 	flex-direction: column;
-	width: 22rem;
+	width: 20rem;
 	border-radius: 20px;
 	background-color: #e2e2e2;
 	padding-top: 20px;

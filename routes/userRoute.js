@@ -84,6 +84,11 @@ user_route.get('/profile', auth.isLogin, userController.loadProfile);
 user_route.post('/update-profile', upload.single('image'), userController.updateProfile);
 user_route.post('/delete-profile', auth.isLogin, userController.deleteProfile);
 
+user_route.get('/forgot-password', auth.isLogout, userController.forgotPasswordLoad);
+user_route.post('/forgot-password', userController.forgotPassword);
+user_route.get('/password-reset', auth.isLogout, userController.passwordResetLoad);
+user_route.post('/password-reset', auth.isLogout, userController.passwordReset);
+
 
 user_route.get('*', userController.notFound);
 

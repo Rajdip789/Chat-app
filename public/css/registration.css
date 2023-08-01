@@ -85,11 +85,6 @@ body {
 
 .registration__container .registration__card .checking {
 	width: 94%;
-	justify-content: space-between;
-}
-
-.registration__container .registration__card .checking div {
-	display: flex;
 }
 
 .registration__container .registration__card .checking .text {
