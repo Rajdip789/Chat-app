@@ -78,7 +78,7 @@ $(document).ready(() => {
 		$(this).addClass('custom__active');
 
 		$('.user__name').text(user_name);
-		$('.user__img').attr('src', 'http://localhost:5000/'+ user_image);
+		$('.user__img').attr('src', 'https://chatify-nlru.onrender.com/'+ user_image);
 
 		user_status == "true" ? $('.user__lastActive').text("Online") :
 		$('.user__lastActive').text("Last active "+getFullDateTime(lastSeen));
@@ -307,7 +307,7 @@ $(document).ready(() => {
 		$('#group-id').val(global_group_id);
 		$('.group__name').text(group_name);
 		$('.group__description').text(group__description);
-		$('.group__image').attr('src', 'http://localhost:5000/'+ group_image);
+		$('.group__image').attr('src', 'https://chatify-nlru.onrender.com/'+ group_image);
 	
 		
 		//Load old chats 
@@ -631,7 +631,7 @@ socket.on('loadNewGroupChat', (data) => {
 		let html = `<div class="opposite__user__chat" id='${data[0]._id}'>`;
 
 		html += '<div>' +
-					'<img src="http://localhost:5000/' + data[0].sender_id.image + '" alt="sender-img" class="rounded-pill" height="20px"/>' +
+					'<img src="https://chatify-nlru.onrender.com/' + data[0].sender_id.image + '" alt="sender-img" class="rounded-pill" height="20px"/>' +
 					'<span class="group__username">' + data[0].sender_id.username + '</span>' +
 				'</div>';	
 
@@ -672,7 +672,7 @@ socket.on('receiveOldGroupChat', (data) => {
 
 		if(oldGroupChats[i].sender_id._id != sender_id) {
 			html += '<div>' +
-						'<img src="http://localhost:5000/' + oldGroupChats[i].sender_id.image + '" alt="sender-img" class="rounded-pill" height="20px"/>' +
+						'<img src="https://chatify-nlru.onrender.com/' + oldGroupChats[i].sender_id.image + '" alt="sender-img" class="rounded-pill" height="20px"/>' +
 						'<span class="group__username">' + oldGroupChats[i].sender_id.username + '</span>' +
 					'</div>';		
 		}

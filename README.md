@@ -43,8 +43,10 @@ To run Chatify locally on your machine, follow these steps:
 
 2. Install the required dependencies.
 
+```bash
 cd chatify
 npm install
+```
 
 
 3. Set up environment variables.
@@ -52,21 +54,24 @@ npm install
    - Create a `.env` file in the root directory.
    - Obtain your Google OAuth, momgodb, email credentials and add them to the `.env` file as follows-
 
-	MONGO_URL=your_mongo_atlas_url
-	PORT=5000
-	ORIGIN_URL=http://localhost:5000
-	SGOOGLE_CLIENT_ID=your_google_client_id
-	GOOGLE_CLIENT_SECRET=your_google_client_secret
-	SESSION_SECRET=your_session_secret
-	EMAIL_HOST=smtp_server_host
-	EMAIL_USERNAME=your_email_username
-	EMAIL_PASSWORD=your_email_password
-	FROM_EMAIL=your_email_from_which_to_send_mail
-
+```bash
+MONGO_URL=your_mongo_atlas_url
+PORT=5000
+ORIGIN_URL=http://localhost:5000
+SGOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+SESSION_SECRET=your_session_secret
+EMAIL_HOST=smtp_server_host
+EMAIL_USERNAME=your_email_username
+EMAIL_PASSWORD=your_email_password
+FROM_EMAIL=your_email_from_which_to_send_mail
+```
 
 4. Run the application.
 
+```bash
 npm start
+```
 
 ## Technologies Used
 
