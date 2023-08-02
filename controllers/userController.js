@@ -25,18 +25,27 @@ const registerLoad = async (req, res) => {
 const register = async (req, res) => {
 	try {
 
-		const passwordHash = await bcrypt.hash(req.body.password, 10);
+		const userData = await User.findOne({ email: req.body.email});
 
-		const user = new User({
-			username: req.body.name,
-			email: req.body.email,
-			/*image: 'images/' + req.file.filename,*/
-			password: passwordHash
-		});
+		if(userData) {
 
-		await user.save();
+			res.render('register', { success: false, message: 'Email already exists !' })
+		
+		} else {
 
-		res.render('register', { message: 'Registration successfull !!' })
+			const passwordHash = await bcrypt.hash(req.body.password, 10);
+
+			const user = new User({
+				username: req.body.name,
+				email: req.body.email,
+				/*image: 'images/' + req.file.filename,*/
+				password: passwordHash
+			});
+
+			await user.save();
+
+			res.render('register', { success: true, message: 'Registered successfully ! Please login to enter !' })
+		}
 
 	} catch (error) {
 		console.log(error);

@@ -66,10 +66,10 @@ $(document).ready(() => {
 		$('.start-head').hide();
 		$('.chat-section').fadeIn(400);
 
-		console.log($(window).width);
 		if($(window).width() <= 768) {
-			$(".list-group").fadeOut(400);
+			$(".col-md-3").fadeOut(400);
 			$("#back-chat").removeClass('d-none');
+			$(".row").css('padding', '0rem 1rem');
 		} 
 
 		$('.chat-section').addClass('d-flex');
@@ -91,9 +91,10 @@ $(document).ready(() => {
 
 $("#back-chat").click(() => {
 	$("#back-chat").addClass('d-none');
-	$(".list-group").fadeIn(400);
+	$(".col-md-3").fadeIn(400);
 	$('.chat-section').removeClass('d-flex');
 	$('.chat-section').addClass('d-none');
+	$(".row").css('padding', '1rem 1rem 0rem 1rem');
 })
 
 //Update user status
@@ -292,8 +293,9 @@ $(document).ready(() => {
 
 		console.log($(window).width);
 		if($(window).width() <= 768) {
-			$(".list-group").fadeOut(400);
+			$(".col-md-3").fadeOut(400);
 			$("#back-chat").removeClass('d-none');
+			$(".row").css('padding', '0rem 1rem');
 		} 
 
 		$('.chat-section').addClass('d-flex');

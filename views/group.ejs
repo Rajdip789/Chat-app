@@ -37,8 +37,8 @@
 	<% } else { %>
 
 	<div class="row">
-		<div class="col-md-3">
-			<a id="back-chat" class="fa fa-arrow-left ml-2 d-none" style="color: white;" aria-hidden="true"></a>
+		<a id="back-chat" class="fa fa-arrow-left ml-2 mt-1 mb-1 d-none" style="color: white;" aria-hidden="true"></a>
+		<div class="col-md-3" style="height: auto;">
 			<ul class="list-group">
 
 				<% if(myGroups.length == 0 && joinedGroups.length == 0) { %>
@@ -122,8 +122,7 @@
 											<div class="modal-body app__flex flex-column" style="gap: 15px;">
 
 												<input type="hidden" name="group_id" id="group-update-id"/>
-												<!-- <input type="file" name="image" class="w-50 mb-2" id="group-image" /> -->
-
+												
 												<div class="app__flex" style="gap: 20px;">
 													<div class="app__flex manage__group__img">
 														<img src="" alt="group image" id="selectedImage"/>

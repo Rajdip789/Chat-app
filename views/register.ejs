@@ -12,12 +12,16 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-	<% if(typeof message !== 'undefined') {
-		%>
-			<div class="success-message">
-				<i class="fa fa-check-circle-o" aria-hidden="true"></i> Registered successfully ! Please login to enter !
-			</div>
-		<%
+	<% if (typeof message !== 'undefined') {
+		if (success) { %>
+			<div class="custom-message">
+				<i class="fa fa-check-circle-o" aria-hidden="true"></i> <%= message %>
+		  	</div>
+		<% } else { %>
+		  	<div class="custom-message" style="color: #ff4646;">
+				<i class="fa fa-exclamation-circle" aria-hidden="true"></i> <%= message %>
+		  	</div>
+		<% }
 	} %>
 	<div class='app__flex registration__container'>
 		<div class='app__flex registration__card'>

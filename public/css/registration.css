@@ -164,7 +164,7 @@ body {
 	}
 }
 
-.success-message {
+.custom-message {
 	cursor: pointer;
 	padding: 6px;
     text-align: center;
