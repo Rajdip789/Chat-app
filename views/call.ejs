@@ -1,0 +1,61 @@
+<%- include('layouts/header.ejs') %>
+			<div class="row">
+				<div class="col-md-3">
+					<ul class="list-group">
+
+						<% if(userList.length == 0) { %>
+							<h2>No Users found!</h2>
+						<% }
+
+						else {
+
+							%>
+								<form action="" method="GET" class="search__input">
+									<input type="text" name="user" placeholder="Search user">
+									<button type="submit" class="btn btn-light app__flex">
+										<a class="fa fa-search" aria-hidden="true"></a>
+									</button>
+								</form>							
+							<%
+								for(let i = 0; i< userList.length; i++) {
+									%>
+										<li class="list-group-item call-list app__flex" style="gap: 8px; padding: 12px 16px;" data-id = "<%= userList[i]._id %>" data-name="<%= userList[i].username %>" data-image="<%= userList[i].image %>">
+											<div class="app__flex calluser__image">
+												<img src="<%= process.env.ORIGIN_URL %>/<%=userList[i].image %>" alt="user logo" height="70%">
+											</div>
+											<div class="flex-grow-1" style="font-size: 12px;">
+												<%= userList[i].username %>
+												<%
+													if(userList[i].isOnline) {
+														%>	
+															<sup class="online__status" id="<%= userList[i]._id %>-status" ></sup>
+														<%
+													} else {
+														%>
+															<sup class="offline__status" id="<%= userList[i]._id %>-status" ></sup>
+														<%
+													} 
+												%>
+											</div>
+											<button class="fa fa-phone call__icon call-user" aria-hidden="true" data-toggle="modal" data-backdrop="false"></button>
+											<button class="fas fa-video call__icon videocall-user" aria-hidden="true"></button>
+										</li>
+									<%
+								}
+							}
+						%>
+					</ul>
+				</div>
+				
+				<div class="app__flex col-md-9" id="start-chat">
+					<h1 class="start-head"> Press call icon to start a Call</h3>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<script src="/js/main.js"></script>
+</body>
+</html>

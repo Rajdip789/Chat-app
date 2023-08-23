@@ -614,6 +614,27 @@ const passwordReset = async (req, res) => {
 	}
 }
 
+const loadCalls = async (req, res) => {
+	try {
+
+		let searchUser = req.query.user || '';
+		let queryObject = {};
+
+		queryObject._id = { $nin: [req.session.user._id] };
+
+		if (searchUser) {
+			queryObject.username = { $regex: searchUser, $options: "i" }; 
+		}
+
+		const userList = await User.find(queryObject);
+
+		res.render('call', { user: req.session.user, userList: userList });
+
+	} catch (error) {
+		console.log(error);
+	}
+}
+
 const notFound = (req, res) => {
 
 	res.render('notfound', { message: "404 Page not found" });
@@ -648,5 +669,6 @@ module.exports = {
 	forgotPasswordLoad,
 	forgotPassword,
 	passwordResetLoad,
-	passwordReset
+	passwordReset,
+	loadCalls
 }

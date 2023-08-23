@@ -89,6 +89,7 @@ user_route.post('/forgot-password', userController.forgotPassword);
 user_route.get('/password-reset', auth.isLogout, userController.passwordResetLoad);
 user_route.post('/password-reset', auth.isLogout, userController.passwordReset);
 
+user_route.get('/calls', auth.isLogin, userController.loadCalls);
 
 user_route.get('*', userController.notFound);
 

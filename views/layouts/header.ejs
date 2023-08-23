@@ -11,6 +11,7 @@
 
 	<!-- jquery -->
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
 
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
@@ -19,7 +20,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
 	<!-- font-awesome -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+	<link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
 	<!-- Sweetalert2 -->
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -42,15 +43,15 @@
 		<div class="app__flex">
 			<div class="app__flex asideNavbar">
 				<div class="app__flex top">
-					<a class="fa fa-bars fa-2x"></a>
+					<a class="fa fa-bars fa-2x" style="color: #fafafa;"></a>
 				</div>
 				<div class="app__flex center">
 					<a href="/dashboard" class="fa fa-home"></a>
-					<a href="/groups" class="fa fa-group"></a>
+					<a href="/groups" class="fa fa-users"></a>
 					<a href="/calls" class="fa fa-phone"></a>
 				</div>
 				<div class="app__flex bottom">
-					<a class="fa fa-sign-out fa-2x" aria-hidden="true"></a>
+					<a class="fa fa-sign-out fa-2x" style="color: #fafafa;"></a>
 				</div>
 			</div>
 		</div>
@@ -62,7 +63,7 @@
 					<div class="left">
 						<div class="menu-toggel">
 							<a href="/dashboard" class="fa fa-home"></a>
-							<a href="/groups" class="fa fa-group"></a>
+							<a href="/groups" class="fa fa-users"></a>
 							<a href="/calls" class="fa fa-phone"></a>
 						</div>
 						<div class="app__name">
@@ -75,7 +76,73 @@
 						<a href="/profile" class="profile">
 						<img src="<%= process.env.ORIGIN_URL %>/<%= user.image %>" class="profile" alt="" width="15%" />
 						</a>
-						<a class="fa fa-sign-out fa-2x head-sign-out" style="color: #2a3654;" aria-hidden="true"></a>
+						<a class="fa fa-sign-out fa-2x head-sign-out" style="color: #2a3654;" ></a>
 					</div>
+				</div>
+			</div>
+
+			<!-- Voice Call Modal -->
+			<div id="voiceCallModel" class="modal fade" data-backdrop="static">
+				<div class="modal-dialog modal-dialog-centered modal-sm">
+					<div class="modal-content" style="border-radius: 10px; background-color: #f2f2f2; cursor: move;">
+						<div class="modal-body">
+							<div class="app__flex flex-column p-2" style="gap: 12px;">
+								<div class="app__flex remoteUser__image">
+									<img id="currentcall-user-image" src="" alt="remote-user">
+								</div>
+								<p class="modal-title" id="currentcall-user-name" style="color: #795cff; font-weight: 600; font-size: 16px; font-family: cursive;"></p>
+								<p id="call-text" class="p-4 text-dark"></p>
+								<span id="timer" class="p-4 text-dark" style="display: none;"></span>
+							</div>
+							<div class=""> 
+								<audio id="ringAudio" src="http://localhost:5000/assets/galaxy_bells_s21.mp3" loop></audio>
+								<audio id="remoteAudio" autoplay></audio>
+							</div>
+							<div class="app__flex p-2" style="justify-content: space-evenly;">
+								<div id="btn-1" class="app__flex flex-column" style="display: none; gap: 10px;">
+									<button id="call-mute" class="fas fa-microphone currentcall__icon" style="background-color: grey;"></button> 
+									<span style="font-size: small;">Mute</span>
+								</div>
+								<div id="btn-2" class="app__flex flex-column" style="gap: 10px;">
+									<button id="call-dismiss" class="fas fa-phone fa-rotate-135 currentcall__icon" style="background-color: #f74e4e;" data-dismiss="modal"></button> 
+									<span style="font-size: small;">Decline</span>
+								</div>
+								<div id="btn-3" class="app__flex flex-column" style="display: none; gap: 10px;">
+									<button id="call-receive" class="fas fa-phone fa-rotate-90 currentcall__icon" style="background-color: #32e754;"></button>
+									<span style="font-size: small;">Accept</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Video Call Section -->
+			<div class="videocall-section" style="position: relative; display: none;">
+				<div class="app__flex flex-column videocall__negotiation">
+					<div class="app__flex remoteUser__image">
+						<img id="currentvideocall-user-image" src="" alt="remote-user">
+					</div>
+					<p class="modal-title" id="currentvideocall-user-name" style="color: #795cff; font-weight: 600; font-size: 16px; font-family: cursive;"></p>
+					<p id="videocall-text" class="p-5 text-light"></p>
+				</div>
+				<div class="app__flex remote__video">
+					<p class="remoteuser__name"></p>
+					<audio id="VideoCallringAudio" src="http://localhost:5000/assets/galaxy_bells_s21.mp3" loop></audio>
+					<video id="remoteVideo" style="height: 95%; border-radius: 10px;" autoplay>
+
+					</video>
+				</div>
+				<div class="local__video">
+					<video id="localVideo" style="height: 100%; border-radius: 10px;" muted autoplay>
+						
+					</video>	
+					<p class="localuser__name"></p>
+				</div>
+				<div class="app__flex videocall__btns">
+					<button id="videocallmic-mute" class="far fa-microphone currentvideocall__icon" style="display: none;"></button> 
+					<button id="videocallvideo-mute" class="far fa-video currentvideocall__icon" style="display: none;"></button> 
+					<button id="videocall-dismiss" class="far fa-phone fa-rotate-135 currentvideocall__icon" style="background-color: #f74e4e; color: #f2f2f2;"></button> 
+					<button id="videocall-receive" class="far fa-phone fa-rotate-90 currentvideocall__icon" style="background-color: #32e754; color: #f2f2f2; display: none;"></button>
 				</div>
 			</div>
