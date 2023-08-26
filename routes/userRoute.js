@@ -10,16 +10,19 @@ const userController = require('../controllers/userController');
 const auth = require('../middlewares/auth')
 
 
-const storage = multer.diskStorage({
-	destination: (req, file, cb) => {
-		cb(null, path.join(__dirname, '../public/images'));
-	},
-	filename: (req, file, cb) => {
-		const name = Date.now()+'-'+file.originalname;
-		cb(null, name);
-	}
-});
+// const storage = multer.diskStorage({
+// 	destination: (req, file, cb) => {
+// 		cb(null, path.join(__dirname, '../public/images'));
+// 	},
+// 	filename: (req, file, cb) => {
+// 		const name = Date.now()+'-'+file.originalname;
+// 		cb(null, name);
+// 	}
+// });
 
+// const upload = multer({ storage: storage });
+
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 

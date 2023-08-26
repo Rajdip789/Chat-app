@@ -12,7 +12,15 @@ const bcrypt = require('bcrypt');
 const fs = require('fs');
 const path = require("path");
 const crypto = require('crypto');
+const cloudinary = require('../config/cloudinaryConfig');
+let streamifier = require('streamifier');
 
+const get_public_id = (imageUrl) => {
+	let startIndex = imageUrl.lastIndexOf('/') + 1;
+	let endIndex = imageUrl.lastIndexOf('.');
+
+	return imageUrl.slice(startIndex, endIndex);
+}
 
 const registerLoad = async (req, res) => {
 	try {
@@ -38,7 +46,6 @@ const register = async (req, res) => {
 			const user = new User({
 				username: req.body.name,
 				email: req.body.email,
-				/*image: 'images/' + req.file.filename,*/
 				password: passwordHash
 			});
 
@@ -482,28 +489,35 @@ const deleteProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
 	try {
 
-		const image = req.session.user.image;
-		const newImage = req.file.filename;
+		const imageUrl = req.session.user.image;
 		const user_id = req.session.user._id;
 
-		if(image !== "images/default.png") {
-			const filePath = path.resolve("./") + "/public/" + image;
+		if(imageUrl !== "https://res.cloudinary.com/dpcqknniq/image/upload/v1692854657/user-profiles/default_umustr.png") {
 
-			fs.unlink(filePath, (err) => {
-				if (err) {
-					console.error(err);
-					return;
-				}
-			});
+			const public_id = "user-profiles/" + get_public_id(imageUrl);
+			console.log(public_id);
+			await cloudinary.uploader.destroy(public_id);
 		}
 
-		req.session.user.image = 'images/' + newImage;
+		const cld_upload_stream = cloudinary.uploader.upload_stream({  
+			folder: 'user-profiles'
+		}, async function(error, result) {
 
-		await User.findByIdAndUpdate({ _id: user_id }, {
-			$set: {
-				image: 'images/' + newImage
+			if(error) {
+				throw new Error("Upload failed");
 			}
+
+			await User.findByIdAndUpdate({ _id: user_id }, {
+				$set: {
+					image: result.secure_url
+				}
+			});
+
+			req.session.user.image = result.secure_url;
+			req.session.save();
 		});
+
+		streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
 
 		res.status(200).send({ success: true, message: 'Pofile updated successfully !!' });
 

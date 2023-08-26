@@ -5,7 +5,7 @@
 			<div class="mr-auto ml-auto profile__col">
 				<div class="app__flex profile__image">
 					<div class="app__flex user__image">
-						<img src="<%= process.env.ORIGIN_URL %>/<%= user.image %>" alt="profile-pic" id="selectedImage"/>
+						<img src="<%= user.image %>" alt="profile-pic" id="selectedImage"/>
 					</div>
 					<div class="app__flex profile__update">
 						<input type="file" name="image" id="imageInput" class="w-50 mb-2 d-none" accept=".png, .jpg, .jpeg" required />

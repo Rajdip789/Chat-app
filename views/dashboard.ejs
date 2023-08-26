@@ -22,7 +22,7 @@
 									%>
 										<li class="list-group-item user-list app__flex" data-id = "<%= userList[i]._id %>" data-name="<%= userList[i].username %>" data-image="<%= userList[i].image %>" data-time="<%= userList[i].updatedAt %>" data-status="<%= userList[i].isOnline %>">
 											<div class="app__flex user__image">
-												<img src="<%= process.env.ORIGIN_URL %>/<%=userList[i].image %>" alt="user logo" height="70%">
+												<img src="<%= userList[i].image %>" alt="user logo" height="70%">
 											</div>
 											<div class="flex-grow-1">
 												<%= userList[i].username %>
