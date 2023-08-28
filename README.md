@@ -11,9 +11,9 @@ Chatify is a real-time chat application built using NodeJS and Socket.io. It all
 
 ## Introduction
 
-Chatify is a personal project that aims to provide a user-friendly and secure real-time chat application. It allows users to interact with their friends, family, or colleagues through one-to-one chats or group messaging. Additionally, users can create their own groups and invite others to join using unique links.
+Chatify is a project that aims to provide a user-friendly and secure real-time chat application. It allows users to interact with other users through one-to-one chats, group messaging or voice & video calls. Additionally, users can create their own groups and invite others to join using unique links.
 
-The application uses Socket.io to enable real-time communication, ensuring that messages are delivered instantly to all participants. Google OAuth is employed for authentication, providing a secure and hassle-free login experience for users.
+The application uses Socket.io to enable real-time communication, ensuring that messages are delivered instantly to all participants. Google OAuth is employed for authentication, providing a secure and hassle-free login experience for users. Also WebRTC is used to provide realtime, powerfull voice & video-communication solutions.
 
 ## Features
 
@@ -29,11 +29,13 @@ Chatify offers the following key features:
 
 5. **Join Group Using Unique Link**: Users can join groups by clicking on unique invitation links shared by other group members.
 
-6. **Personalize Profile View**: Users can personalize their profile view with a profile picture and status message.
+6. **One-to-One Voice and Video Calls**: Users can initiate voice and video calls with other users directly within this app.
 
-7. **Reset Password Functionality**: Users can reset their password if they forget it. They will receive a password reset link via email, allowing them to set a new password securely.
+7. **Personalize Profile View**: Users can personalize their profile view with a profile picture and status message.
 
-8. **Secure Authentication**: Google OAuth is used for secure and convenient user authentication.
+8. **Reset Password Functionality**: Users can reset their password if they forget it. They will receive a password reset link via email, allowing them to set a new password securely.
+
+9. **Secure Authentication**: Google OAuth is used for secure and convenient user authentication.
 
 ## Installation
 
@@ -65,6 +67,9 @@ EMAIL_HOST=smtp_server_host
 EMAIL_USERNAME=your_email_username
 EMAIL_PASSWORD=your_email_password
 FROM_EMAIL=your_email_from_which_to_send_mail
+CLOUDINARY_CLOUD_NAME=cloudinary_cloud_name
+CLOUDINARY_API_KEY=cloudinary_api_key
+CLOUDINARY_API_SECRET=cloudinary_api_secret
 ```
 
 4. Run the application.
@@ -82,6 +87,7 @@ npm start
 - HTML/CSS
 - JavaScript
 - JQuery
+- WebRTC
 
 ---
 
