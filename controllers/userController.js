@@ -9,8 +9,6 @@ const sendEmail = require('../utils/sendEmail');
 
 const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
-const fs = require('fs');
-const path = require("path");
 const crypto = require('crypto');
 const cloudinary = require('../config/cloudinaryConfig');
 let streamifier = require('streamifier');
@@ -192,14 +190,28 @@ const loadGroups = async (req, res) => {
 const createGroup = async (req, res) => {
 	try {
 
-		const group = new Group({
+		let newGroup = {
 			admin_id: req.session.user._id,
 			name: req.body.name,
-			description: req.body.description,
-			image: 'images/' + req.file.filename
-		})
+			description: req.body.description
+		}
 
-		await group.save();
+		const cld_upload_stream = cloudinary.uploader.upload_stream({  
+			folder: 'group-profiles'
+		}, async function(error, result) {
+
+			if(error) {
+				throw new Error("Upload failed");
+			}
+
+			newGroup['image'] = result.secure_url;
+
+			const group = new Group(newGroup);
+			await group.save();
+
+		});
+
+		streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
 
 		// const groups = await Group.find({ admin_id: req.session.user._id });
 
@@ -297,13 +309,37 @@ const updateGroup = async (req, res) => {
 			description: req.body.description
 		}
 
-		if (req.file != undefined) {
-			updateObj['image'] = 'images/' + req.file.filename
-		}
+		if (req.file === undefined) {
 
-		await Group.findByIdAndUpdate({ _id: req.body.group_id }, {
-			$set: updateObj
-		});
+			await Group.findByIdAndUpdate({ _id: req.body.group_id }, {
+				$set: updateObj
+			});
+
+		} else {
+
+			const group = await Group.findOne({ _id: req.body.group_id });
+			const public_id = "group-profiles/" + get_public_id(group.image);
+
+			await cloudinary.uploader.destroy(public_id);
+
+			const cld_upload_stream = cloudinary.uploader.upload_stream({  
+				folder: 'group-profiles'
+			}, async function(error, result) {
+	
+				if(error) {
+					throw new Error("Upload failed");
+				}
+
+				updateObj['image'] = result.secure_url;
+
+				await Group.findByIdAndUpdate({ _id: req.body.group_id }, {
+					$set: updateObj
+				});
+
+			});
+	
+			streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
+		}
 
 		res.status(200).send({ success: true, message: 'Group updated successfully' });
 
@@ -317,14 +353,11 @@ const deleteGroup = async (req, res) => {
 	try {
 
 		const groupData = await Group.findOne({ _id: req.body.group_id });
-		const filePath = path.resolve("./") + "/public/" + groupData.image;
+		const imageUrl = groupData.image;
 
-		fs.unlink(filePath, (err) => {
-			if (err) {
-				console.error(err);
-				return;
-			}
-		});
+		const public_id = "group-profiles/" + get_public_id(imageUrl);
+
+		await cloudinary.uploader.destroy(public_id);
 
 		await Group.deleteOne({ _id: req.body.group_id });
 		await Member.deleteMany({ group_id: req.body.group_id });
@@ -457,16 +490,9 @@ const deleteProfile = async (req, res) => {
 		const image = req.session.user.image;
 		const user_id = req.session.user._id;
 
-		if(image !== "images/default.png") {
-			const filePath = path.resolve("./") + "/public/" + image;
-
-			fs.unlink(filePath, (err) => {
-				if (err) {
-					console.error(err);
-					return;
-				}
-			});
-		}
+		const public_id = "user-profiles/" + get_public_id(image);
+	
+		await cloudinary.uploader.destroy(public_id);
 
 		await User.deleteOne({ _id: user_id });
 		await Member.deleteMany({ member_id: user_id });
@@ -493,9 +519,8 @@ const updateProfile = async (req, res) => {
 		const user_id = req.session.user._id;
 
 		if(imageUrl !== "https://res.cloudinary.com/dpcqknniq/image/upload/v1692854657/user-profiles/default_umustr.png") {
-
+			
 			const public_id = "user-profiles/" + get_public_id(imageUrl);
-			console.log(public_id);
 			await cloudinary.uploader.destroy(public_id);
 		}
 

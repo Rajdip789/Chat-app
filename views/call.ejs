@@ -21,7 +21,7 @@
 									%>
 										<li class="list-group-item call-list app__flex" style="gap: 8px; padding: 12px 16px;" data-id = "<%= userList[i]._id %>" data-name="<%= userList[i].username %>" data-image="<%= userList[i].image %>">
 											<div class="app__flex calluser__image">
-												<img src="<%= process.env.ORIGIN_URL %>/<%=userList[i].image %>" alt="user logo" height="70%">
+												<img src="<%=userList[i].image %>" alt="user logo" height="70%">
 											</div>
 											<div class="flex-grow-1" style="font-size: 12px;">
 												<%= userList[i].username %>

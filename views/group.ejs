@@ -2,8 +2,8 @@
 
 	<% if(typeof GroupJoinResData !== 'undefined') { %>
 		<div class="app__flex flex-column p-4" style="height: 95%;">
-			<div class="rounded bg-light m-2">
-				<img src="<%= process.env.ORIGIN_URL %>/<%= GroupJoinResData.group.image %>" alt="user logo" height="100px">
+			<div class="app__flex joinGroup__logo">
+				<img src="<%= GroupJoinResData.group.image %>" alt="group logo" height="100%">
 			</div>
 			<div class="app__flex flex-column m-2 text-white">
 				<h4 class="text-white"><%= GroupJoinResData.group.name %></h4>
@@ -18,7 +18,7 @@
 					
 					if(GroupJoinResData.isAdmin) {
 						%>
-							<p>Can't join as you are the creator of this group!</p>
+							<p class="text-center">Can't join as you are the creator of this group!</p>
 							<a href="/dashboard" class="btn btn-light">Back to Home</a>
 						<%
 					} else if(GroupJoinResData.isJoined != 0) {
@@ -42,7 +42,7 @@
 			<ul class="list-group">
 
 				<% if(myGroups.length == 0 && joinedGroups.length == 0) { %>
-					<h3>No Groups found!</h3>
+					<h5 style="color: #e2e2e2; padding-left: 10px;">No Groups found!</h5>
 				<% } %>
 
 				<!--------- My Groups ------------->
@@ -50,7 +50,7 @@
 					for(let i = 0; i< myGroups.length; i++) { %>
 						<li class="list-group-item group-list app__flex" data-id="<%= myGroups[i]._id %>" data-name="<%= myGroups[i].name %>" data-image="<%= myGroups[i].image %>" data-description="<%= myGroups[i].description %>">
 							<div class="app__flex group__image">
-								<img src="<%= process.env.ORIGIN_URL %>/<%= myGroups[i].image %>" alt="user logo" height="70%">
+								<img src="<%= myGroups[i].image %>" alt="user logo" height="70%">
 							</div>
 							<div class="flex-grow-1">
 								<%= myGroups[i].name %>
@@ -156,7 +156,7 @@
 						for(let i = 0; i< joinedGroups.length; i++) { %>
 							<li class="list-group-item group-list app__flex" data-id="<%= joinedGroups[i].group_id._id %>" data-name="<%= joinedGroups[i].group_id.name %>" data-image="<%= joinedGroups[i].group_id.image %>" data-description="<%= joinedGroups[i].group_id.description %>">
 								<div class="app__flex group__image">
-									<img src=<%= process.env.ORIGIN_URL %>/<%= joinedGroups[i].group_id.image %> alt="user logo" height="70%">
+									<img src=<%= joinedGroups[i].group_id.image %> alt="user logo" height="70%">
 								</div>
 								<div class="flex-grow-1">
 									<%= joinedGroups[i].group_id.name %>
@@ -198,7 +198,7 @@
 									<input type="hidden" name="group_id" id="group-id"/>
 									<div class="app__flex" style="gap: 20px;">
 										<div class="app__flex manage__group__img">
-											<img src="<%= process.env.ORIGIN_URL %>/images/default_group.png" alt="group image" id="selectedImage"/>
+											<img src="images/default_group.png" alt="group image" id="selectedImage"/>
 										</div>
 	
 										<input type="file" name="image" id="imageInput" class="d-none" accept=".png, .jpg, .jpeg" required />

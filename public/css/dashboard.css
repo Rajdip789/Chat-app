@@ -523,6 +523,13 @@ body {
 	display: none;
 }
 
+
+.joinGroup__logo {
+	width: 8rem;
+	height: 8rem;
+	border-radius: 50%;
+	overflow: hidden;
+}
 .group__username {
 	font-size: smaller;
 	background: none;

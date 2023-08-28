@@ -1,12 +1,16 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const passport = require('passport');
 const dotenv = require("dotenv");
-const axios = require('axios');
-const fs = require('fs');
-const uniqid = require('uniqid');
+const cloudinary = require('./config/cloudinaryConfig');
 dotenv.config();
 
 const User = require('./models/userModel');
+
+function generateRandomPassword(length) {
+	return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
+}
 
 passport.use(new GoogleStrategy({
 
@@ -24,28 +28,20 @@ passport.use(new GoogleStrategy({
 
 		} else {
 
-			const id = uniqid();
-			axios({
-				method: 'get',
-				url: profile.photos[0].value,
-				responseType: 'stream',
-			})
-			.then(function (response) {
-				response.data.pipe(fs.createWriteStream(`public/images/${id}.jpg`));
-			})
-			.catch(function (error) {
-				console.log(error);
+			const res = await cloudinary.uploader.upload(profile.photos[0].value, {  
+				folder: 'user-profiles'
 			});
+
+			const passwordHash = await bcrypt.hash(generateRandomPassword(22), 10);
 
 			const newUser = new User({
 				username : profile.displayName,
 				email : profile.emails[0].value,
-				password: "98/034#49834r30/u03452#$wu2#$59fse/023",
-				image: 'images/' + `${id}.jpg`
+				password: passwordHash,
+				image: res.secure_url
 			})
 
 			await newUser.save();
-			console.log("New user created")
 			done(null, newUser);
 		}
 	}

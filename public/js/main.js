@@ -84,7 +84,7 @@ $(document).ready(() => {
 		$(this).addClass('custom__active');
 
 		$('.user__name').text(user_name);
-		$('.user__img').attr('src', 'https://chatify-nlru.onrender.com/'+ user_image);
+		$('.user__img').attr('src', user_image);
 
 		user_status == "true" ? $('.user__lastActive').text("Online") :
 		$('.user__lastActive').text("Last active "+getFullDateTime(lastSeen));
@@ -317,7 +317,7 @@ $(document).ready(() => {
 		$('#group-id').val(global_group_id);
 		$('.group__name').text(group_name);
 		$('.group__description').text(group__description);
-		$('.group__image').attr('src', 'https://chatify-nlru.onrender.com/'+ group_image);
+		$('.group__image').attr('src', group_image);
 	
 		// Load old chats 
 
@@ -401,7 +401,7 @@ $('#add-member-form').submit(function (event){
 $('.updateGroup').click(function() {
 	let group_obj = JSON.parse($(this).attr('data-obj'));
 
-	$('#selectedImage').attr('src', '/' + group_obj.image);
+	$('#selectedImage').attr('src', group_obj.image);
 	$('#group-update-id').val(group_obj._id);
 	$('#group-name').val(group_obj.name);
 	$('#group-description').val(group_obj.description);
@@ -646,7 +646,7 @@ socket.on('loadNewGroupChat', (data) => {
 		let html = `<div class="opposite__user__chat" id='${data[0]._id}'>`;
 
 		html += '<div>' +
-					'<img src="https://chatify-nlru.onrender.com/' + data[0].sender_id.image + '" alt="sender-img" class="rounded-pill" height="20px"/>' +
+					'<img src="' + data[0].sender_id.image + '" alt="sender-img" class="rounded-pill" height="20px"/>' +
 					'<span class="group__username">' + data[0].sender_id.username + '</span>' +
 				'</div>';	
 
@@ -687,7 +687,7 @@ socket.on('receiveOldGroupChat', (data) => {
 
 		if(oldGroupChats[i].sender_id._id != sender_id) {
 			html += '<div>' +
-						'<img src="https://chatify-nlru.onrender.com/' + oldGroupChats[i].sender_id.image + '" alt="sender-img" class="rounded-pill" height="20px"/>' +
+						'<img src="' + oldGroupChats[i].sender_id.image + '" alt="sender-img" class="rounded-pill" height="20px"/>' +
 						'<span class="group__username">' + oldGroupChats[i].sender_id.username + '</span>' +
 					'</div>';		
 		}
@@ -811,6 +811,8 @@ $('#imageInput').on('change', function (event) {
 	} 
 });
 
+// Update profile image
+
 $('#update-image').click(() => {
 	let image = $('#imageInput')[0].files[0];
 
@@ -903,7 +905,7 @@ const toggleVoiceCallModal = (val, data = null) => {
 	
 		$('#call-text').text("Incoming voice call...");
 		$('#currentcall-user-name').text(data.caller.username);
-		$('#currentcall-user-image').attr('src', 'http://localhost:5000/'+ data.caller.image);
+		$('#currentcall-user-image').attr('src', data.caller.image);
 		$('#ringAudio')[0].play();
 	}
 }
@@ -924,7 +926,7 @@ const toggleVideoCallUI = (val, data = null) => {
 	
 		$('#videocall-text').text("Incoming video call...");
 		$('#currentvideocall-user-name').text(data.caller.username);
-		$('#currentvideocall-user-image').attr('src', 'http://localhost:5000/'+ data.caller.image);
+		$('#currentvideocall-user-image').attr('src', data.caller.image);
 		$('#VideoCallringAudio')[0].play();
 	}
 }
@@ -1269,7 +1271,7 @@ $('.call-user').click( function() {
 	
 	$('#call-text').text("Calling...");
 	$('#currentcall-user-name').text(user_name);
-	$('#currentcall-user-image').attr('src', 'https://chatify-nlru.onrender.com/'+ user_image);
+	$('#currentcall-user-image').attr('src', user_image);
 
 	startCall(voiceCallConstraints, "voice-call");
 })
@@ -1309,7 +1311,7 @@ $('.videocall-user').click( function() {
 
 	$('#videocall-text').text("Calling...");
 	$('#currentvideocall-user-name').text(user_name);
-	$('#currentvideocall-user-image').attr('src', 'http://localhost:5000/'+ user_image);
+	$('#currentvideocall-user-image').attr('src', user_image);
 	$(".localuser__name").text("You");
 
 	startCall(videoCallConstraints, "video-call");

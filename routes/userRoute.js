@@ -1,6 +1,5 @@
 const express = require('express');
 const user_route = express();
-const path = require('path');
 const multer = require('multer');
 const session = require('express-session')
 const cookieParser = require('cookie-parser');
@@ -8,19 +7,6 @@ const passport = require('passport');
 
 const userController = require('../controllers/userController');
 const auth = require('../middlewares/auth')
-
-
-// const storage = multer.diskStorage({
-// 	destination: (req, file, cb) => {
-// 		cb(null, path.join(__dirname, '../public/images'));
-// 	},
-// 	filename: (req, file, cb) => {
-// 		const name = Date.now()+'-'+file.originalname;
-// 		cb(null, name);
-// 	}
-// });
-
-// const upload = multer({ storage: storage });
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });

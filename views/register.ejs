@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<link rel="icon" type="image/png" href="<%= process.env.ORIGIN_URL %>/images/icons8-chat-96.png" />
+	<link rel="icon" type="image/png" href="images/icons8-chat-96.png" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Chatify</title>
@@ -62,17 +62,4 @@
 		</div>
 	</div>
 </body>
-
-<script>
-	$(document).ready(function() {
-		$('input[name="confirmPassword"]').change(function() {
-			if ($(this).is(':checked')) {
-				$('input[name="password"]').attr('type', 'text');
-			} else {
-				$('input[name="password"]').attr('type', 'password');
-			}
-		});
-	});
-</script>
-
 </html>
