@@ -5,6 +5,7 @@ const socketio =  require('socket.io');
 const port = process.env.PORT || 5000
 require('./passport')
 require('./db/conn');
+require('./utils/healthCheck')
 
 const User = require('./models/userModel');
 const Chat = require('./models/chatModel');

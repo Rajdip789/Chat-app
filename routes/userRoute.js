@@ -80,6 +80,8 @@ user_route.post('/password-reset', auth.isLogout, userController.passwordReset);
 
 user_route.get('/calls', auth.isLogin, userController.loadCalls);
 
+user_route.get('/health-check', (req, res) => res.status(200).send({ success: true, data: "Ok. Health check successful." }))
+
 user_route.get('*', userController.notFound);
 
 module.exports = user_route;
